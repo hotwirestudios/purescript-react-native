@@ -15,8 +15,8 @@
     "output"
   ],
   "dependencies": {
-    "purescript-console": "^0.1.0",
-    "purescript-react": "~0.5.0",
+    "purescript-console": "^0.1.1",
+    "purescript-react": "~0.6.0",
     "purescript-functions": "~0.1.0"
   },
   "authors": [
