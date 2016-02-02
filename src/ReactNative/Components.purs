@@ -21,6 +21,9 @@ foreign import textInputClass :: forall props. ReactClass props
 view :: Array Props -> Array ReactElement -> ReactElement
 view = createElement viewClass
 
+viewOneChild :: Array Props -> ReactElement -> ReactElement
+viewOneChild = createElementOneChild viewClass
+
 text :: Array Props -> String -> ReactElement
 text props str = createElement textClass props [textElem str]
 
