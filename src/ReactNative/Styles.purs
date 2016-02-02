@@ -11,9 +11,13 @@ data Style = Style String (Array StyleProp)
 foreign import createStyleSheet :: Array Style -> StyleSheet
 foreign import getStyleId :: StyleSheet -> String -> StyleId
 foreign import unsafeMkStyleProp :: forall val. String -> val -> StyleProp
+foreign import unsafeMkStyleProps :: forall val. String -> val -> Props
 
 style :: StyleId -> Props
 style = unsafeMkProps "style"
+
+styleInline :: Array StyleProp -> Props
+styleInline = unsafeMkStyleProps "style"
 
 styles :: Array StyleId -> Props
 styles = unsafeMkProps "style"

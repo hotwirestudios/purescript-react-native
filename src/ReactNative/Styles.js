@@ -7,7 +7,11 @@ exports.createStyleSheet = function(styles){
   styles.forEach(function(s) { 
     var elemStyles = s.value1;
     var elemObj = {};
-    elemStyles.forEach(function(e){ elemObj[e[0]] = e[1]; });
+    elemStyles.forEach((item) =>{ 
+      for (const key of Object.keys(item)) {
+        elemObj[key] = item[key];
+      }
+    });
     stylesObj[s.value0] = elemObj;
   });
   return require('react-native').StyleSheet.create(stylesObj);
@@ -19,8 +23,22 @@ exports.getStyleId = function(styleSheet){
   }
 }
 
+exports.unsafeMkStyleProps = function(key) {
+  return function(value){
+    var result = {};
+    value.forEach((item) => {
+      for (const key of Object.keys(item)) {
+        result[key] = item[key];
+      }
+    });
+    return result;
+  };
+};
+
 exports.unsafeMkStyleProp = function(key) {
     return function(value) {
-      return [key, value];
+      var result = {};
+      result[key] = value;
+      return result;
     };
 };
