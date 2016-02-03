@@ -3,7 +3,7 @@ module ReactNative.Props where
 import Prelude
 import Control.Monad.Eff (Eff())
 import Data.Function (mkFn0, mkFn3, mkFn4)
-import React (ReactElement(), Event(), EventHandlerContext(), handle)
+import React (ReactElement(), ReactClass, Event(), EventHandlerContext(), handle)
 import React.DOM.Props (Props(), unsafeMkProps)
 import ReactNative.Components (ListViewDataSource())
 
@@ -43,3 +43,9 @@ onSubmitEditing f = unsafeMkProps "onSubmitEditing" (handle f)
 
 onChangeText :: forall eff props state result. (String -> EventHandlerContext eff props state result) -> Props
 onChangeText f = unsafeMkProps "onChangeText" (handle f)
+
+data NavigatorRoute = NavigatorRoute {
+    title :: String,
+    component :: forall props. ReactClass props,
+    passProps :: Array Props
+}
