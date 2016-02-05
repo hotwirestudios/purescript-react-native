@@ -44,8 +44,8 @@ onSubmitEditing f = unsafeMkProps "onSubmitEditing" (handle f)
 onChangeText :: forall eff props state result. (String -> EventHandlerContext eff props state result) -> Props
 onChangeText f = unsafeMkProps "onChangeText" (handle f)
 
-data NavigatorRoute = NavigatorRoute {
+data NavigatorRoute props = NavigatorRoute {
     title :: String,
-    component :: forall props. ReactClass props,
-    passProps :: Array Props
+    component :: ReactClass props,
+    passProps :: props
 }
