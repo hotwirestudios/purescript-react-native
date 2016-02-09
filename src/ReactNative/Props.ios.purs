@@ -3,6 +3,7 @@ module ReactNative.Props.IOS where
 import Prelude (($), (<<<))
 import ReactNative (Color(..))
 import React.DOM.Props (Props(), unsafeMkProps)
+import ReactNative.Props (AssetId)
 
 newtype TabBarPropsIOS = TabBarPropsIOS Props
 newtype TabBarItemPropsIOS = TabBarItemPropsIOS Props
@@ -16,6 +17,9 @@ tabBarBarTintColor (Color c) = TabBarPropsIOS $ unsafeMkProps "barTintColor" c
 
 tabBarTranslucent :: Boolean -> TabBarPropsIOS
 tabBarTranslucent = TabBarPropsIOS <<< unsafeMkProps "translucent"
+
+tabBarItemIcon :: AssetId -> TabBarItemPropsIOS
+tabBarItemIcon = TabBarItemPropsIOS <<< unsafeMkProps "icon" 
 
 tabSelected :: Boolean -> TabBarItemPropsIOS
 tabSelected = TabBarItemPropsIOS <<< unsafeMkProps "selected"

@@ -11,6 +11,7 @@ type RenderRowFn = forall rowData highlightFn. rowData -> String -> String -> hi
 type RenderSeparatorFn = String -> String -> Boolean -> ReactElement
 type RenderHeaderFn = forall eff. Eff eff ReactElement
 type OnPressFn = forall eff. Eff eff Unit
+newtype AssetId = AssetId Int
 
 foreign import unitFn :: forall a. a -> (Unit -> a)
 
