@@ -1,6 +1,6 @@
 module ReactNative.Components.IOS where
 
-import Prelude
+import Prelude (Unit, ($), (++), map, (<<<))
 import Control.Monad.Eff (Eff())
 import React (ReactClass(), ReactElement(), Write)
 import React.DOM.Props (Props(), unsafeMkProps)

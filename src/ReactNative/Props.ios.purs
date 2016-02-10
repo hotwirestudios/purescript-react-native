@@ -19,7 +19,7 @@ tabBarTranslucent :: Boolean -> TabBarPropsIOS
 tabBarTranslucent = TabBarPropsIOS <<< unsafeMkProps "translucent"
 
 tabBarItemIcon :: AssetId -> TabBarItemPropsIOS
-tabBarItemIcon = TabBarItemPropsIOS <<< unsafeMkProps "icon" 
+tabBarItemIcon = TabBarItemPropsIOS <<< unsafeMkProps "icon"
 
 tabSelected :: Boolean -> TabBarItemPropsIOS
 tabSelected = TabBarItemPropsIOS <<< unsafeMkProps "selected"

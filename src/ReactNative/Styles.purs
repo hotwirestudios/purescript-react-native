@@ -126,10 +126,10 @@ flexWrap :: WrapProp -> StyleProp
 flexWrap Wrap = unsafeMkStyleProp "flexWrap" "wrap"
 flexWrap NoWrap = unsafeMkStyleProp "flexWrap" "nowrap"
 
-data JustifyContent = JustifyContentFlexStart 
-                    | JustifyContentFlexEnd 
-                    | JustifyContentCenter 
-                    | JustifyContentSpaceBetween 
+data JustifyContent = JustifyContentFlexStart
+                    | JustifyContentFlexEnd
+                    | JustifyContentCenter
+                    | JustifyContentSpaceBetween
                     | JustifyContentSpaceAround
 
 justifyContent :: JustifyContent -> StyleProp
@@ -177,16 +177,16 @@ fontStyle :: FontStyle -> StyleProp
 fontStyle FontNormal = unsafeMkStyleProp "fontStyle" "normal"
 fontStyle FontItalic = unsafeMkStyleProp "fontStyle" "italic"
 
-data FontWeight = WeightNormal 
-                | WeightBold 
-                | Weight100 
-                | Weight200 
-                | Weight300 
-                | Weight400 
-                | Weight500 
-                | Weight600 
-                | Weight700 
-                | Weight800 
+data FontWeight = WeightNormal
+                | WeightBold
+                | Weight100
+                | Weight200
+                | Weight300
+                | Weight400
+                | Weight500
+                | Weight600
+                | Weight700
+                | Weight800
                 | Weight900
 
 fontWeight :: FontWeight -> StyleProp

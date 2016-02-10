@@ -1,6 +1,6 @@
 module ReactNative.Components where
 
-import Prelude
+import Prelude (class Eq)
 import React (ReactClass(), ReactElement())
 import React.DOM.Props (Props())
 

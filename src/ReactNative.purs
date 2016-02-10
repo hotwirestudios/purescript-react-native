@@ -1,6 +1,6 @@
 module ReactNative where
 
-import Prelude
+import Prelude (Unit, (++), ($))
 import Control.Monad.Eff (Eff())
 import React (ReactClass())
 

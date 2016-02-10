@@ -1,6 +1,5 @@
 module ReactNative.Components.Android where
 
-import Prelude
 import React (ReactClass(), ReactElement())
 import React.DOM.Props (Props())
 import ReactNative.Components (createElementOneChild)

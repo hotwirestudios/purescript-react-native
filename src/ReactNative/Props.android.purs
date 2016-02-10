@@ -7,4 +7,4 @@ foreign import selectableBackground :: NativeFeedbackBackground
 foreign import selectableBackgroundBorderless :: NativeFeedbackBackground
 
 background :: NativeFeedbackBackground -> Props
-background = unsafeMkProps "background" 
+background = unsafeMkProps "background"
