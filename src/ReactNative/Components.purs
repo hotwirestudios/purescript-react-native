@@ -15,6 +15,7 @@ foreign import textElem :: String -> ReactElement
 foreign import textClass :: forall props. ReactClass props
 foreign import listViewClass :: forall props. ReactClass props
 foreign import touchableHighlightClass :: forall props. ReactClass props
+foreign import touchableOpacityClass :: forall props. ReactClass props
 foreign import listViewDataSource :: forall a. (Eq a) => Array a -> ListViewDataSource
 foreign import cloneWithRows :: forall a. ListViewDataSource -> Array a -> ListViewDataSource
 foreign import textInputClass :: forall props. ReactClass props
@@ -36,6 +37,9 @@ listView props = createElement listViewClass props []
 
 touchableHighlight :: Array Props -> ReactElement -> ReactElement
 touchableHighlight = createElementOneChild touchableHighlightClass
+
+touchableOpacity :: Array Props -> ReactElement -> ReactElement
+touchableOpacity = createElementOneChild touchableOpacityClass
 
 textInput :: Array Props -> ReactElement
 textInput props = createElement textInputClass props []
