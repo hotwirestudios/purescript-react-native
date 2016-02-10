@@ -1,6 +1,5 @@
 module ReactNative.Styles where
 
-import Prelude hiding (bottom, top)
 import React.DOM.Props (Props(), unsafeMkProps)
 import ReactNative (Color(..))
 
@@ -14,8 +13,17 @@ foreign import getStyleId :: StyleSheet -> String -> StyleId
 foreign import unsafeMkStyleProp :: forall val. String -> val -> StyleProp
 foreign import unsafeMkStyleProps :: forall val. String -> val -> Props
 
-style :: StyleId -> Props
-style = unsafeMkProps "style"
+class HasStyleKey a where
+    styleKey :: a -> String
+
+createStyle :: forall a. (HasStyleKey a) => a -> Array StyleProp -> Style
+createStyle key = Style (styleKey key)
+
+getStyleIdByKey :: forall a. (HasStyleKey a) => StyleSheet -> a -> StyleId
+getStyleIdByKey sheet key = getStyleId sheet (styleKey key)
+
+style :: forall a. (HasStyleKey a) => StyleSheet -> a -> Props
+style sheet key = unsafeMkProps "style" (getStyleIdByKey sheet key)
 
 styleInline :: Array StyleProp -> Props
 styleInline = unsafeMkStyleProps "style"
