@@ -12,6 +12,7 @@ foreign import createStyleSheet :: Array Style -> StyleSheet
 foreign import getStyleId :: StyleSheet -> String -> StyleId
 foreign import unsafeMkStyleProp :: forall val. String -> val -> StyleProp
 foreign import unsafeMkStyleProps :: forall val. String -> val -> Props
+foreign import mkCombinedStyleProp :: String -> StyleId -> Array StyleProp -> Props
 
 class HasStyleKey a where
     styleKey :: a -> String
@@ -24,6 +25,9 @@ getStyleIdByKey sheet key = getStyleId sheet (styleKey key)
 
 style :: forall a. (HasStyleKey a) => StyleSheet -> a -> Props
 style sheet key = unsafeMkProps "style" (getStyleIdByKey sheet key)
+
+combinedStyle :: forall a. (HasStyleKey a) => StyleSheet -> a -> Array StyleProp -> Props
+combinedStyle sheet key = mkCombinedStyleProp "style" (getStyleIdByKey sheet key)
 
 styleInline :: Array StyleProp -> Props
 styleInline = unsafeMkStyleProps "style"

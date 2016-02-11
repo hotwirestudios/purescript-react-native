@@ -30,6 +30,9 @@ renderFooter elem = unsafeMkProps "renderFooter" (unitFn elem)
 dataSource :: ListViewDataSource -> Props
 dataSource = unsafeMkProps "dataSource"
 
+activeOpacity :: Number -> Props
+activeOpacity = unsafeMkProps "activeOpacity"
+
 onPress :: forall eff props state result. (Event -> EventHandlerContext eff props state result) -> Props
 onPress f = unsafeMkProps "onPress" (handle f)
 
