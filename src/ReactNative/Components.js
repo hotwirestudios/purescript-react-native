@@ -45,8 +45,9 @@ function getProps(props) {
         if (props.length > 0) {
             p = mkProps({})(props);
         }
-    } else if (props.props !== undefined && props.customProps !== undefined) {
-        p = mkProps(props)(props.props);
+    }  else if (props.value0 !== undefined && props.value0.props !== undefined && props.value0.customProps !== undefined) {
+        var result = {value0: props.value0};
+        p = mkProps(result)(props.value0.props);
     } else {
         p = props;
     }
