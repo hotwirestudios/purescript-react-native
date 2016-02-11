@@ -48,6 +48,19 @@ onSubmitEditing f = unsafeMkProps "onSubmitEditing" (handle f)
 onChangeText :: forall eff props state result. (String -> EventHandlerContext eff props state result) -> Props
 onChangeText f = unsafeMkProps "onChangeText" (handle f)
 
+type LayoutEvent = {
+    nativeEvent :: {
+        layout :: {
+            x :: Number,
+            y :: Number,
+            width :: Number,
+            height :: Number}
+    }
+}
+
+onLayout :: forall eff props state result. (LayoutEvent -> EventHandlerContext eff props state result) -> Props
+onLayout f = unsafeMkProps "onLayout" (handle f)
+
 data ComponentProps a = ComponentProps {
     customProps :: a,
     props :: Array Props
