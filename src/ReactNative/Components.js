@@ -25,25 +25,28 @@ exports.cloneWithRows = function(dataSource){
   }
 }
 
-function mkProps(props) {
-    var result = {};
-    for (var i = 0, len = props.length; i < len; i++) {
-        var prop = props[i];
-        for (var key in prop) {
-            if (prop.hasOwnProperty(key)) {
-                result[key] = prop[key];
+function mkProps(result) {
+    return function (props) {
+        for (var i = 0, len = props.length; i < len; i++) {
+            var prop = props[i];
+            for (var key in prop) {
+                if (prop.hasOwnProperty(key)) {
+                    result[key] = prop[key];
+                }
             }
         }
+        return result;
     }
-    return result;
 }
 
 function getProps(props) {
     var p = null;
     if (Array.isArray(props)) {
         if (props.length > 0) {
-            p = mkProps(props);
+            p = mkProps({})(props);
         }
+    } else if (props.props !== undefined && props.customProps !== undefined) {
+        p = mkProps(props)(props.props);
     } else {
         p = props;
     }
