@@ -36,12 +36,24 @@ function mkProps(props) {
         }
     }
     return result;
-};
+}
+
+function getProps(props) {
+    var p = null;
+    if (Array.isArray(props)) {
+        if (props.length > 0) {
+            p = mkProps(props);
+        }
+    } else {
+        p = props;
+    }
+    return p;
+}
 
 exports.createElement = function(clazz) {
     return function(props) {
         return function(children) {
-            return React.createElement(clazz, props.length > 0 ? mkProps(props) : null, children);
+            return React.createElement(clazz, getProps(props), children);
         }
     }
 };
@@ -49,14 +61,14 @@ exports.createElement = function(clazz) {
 exports.createElementOneChild = function(clazz) {
     return function(props) {
         return function(child) {
-            return React.createElement(clazz, props.length > 0 ? mkProps(props) : null, child);
+            return React.createElement(clazz, getProps(props), child);
         }
     }
 };
 
 exports.createElementNoChild = function(clazz) {
     return function(props) {
-        return React.createElement(clazz, props.length > 0 ? mkProps(props) : null);
+        return React.createElement(clazz, getProps(props));
     }
 };
 
