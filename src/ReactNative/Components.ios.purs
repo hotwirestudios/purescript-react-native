@@ -1,10 +1,10 @@
 module ReactNative.Components.IOS where
 
-import Prelude (Unit, ($), (++), map, (<<<))
+import Prelude (Unit, ($), (++), map)
 import Control.Monad.Eff (Eff())
 import React (ReactClass(), ReactElement(), Write)
 import React.DOM.Props (Props(), unsafeMkProps)
-import ReactNative.Components (createElement, createElementOneChild, createElementNoChild)
+import ReactNative.Components (createNativeElement)
 import ReactNative.Props.IOS (TabBarPropsIOS(..), TabBarItemPropsIOS(..), NavigationBarPropsIOS(..))
 import ReactNative.Props (NavigatorRoute(..))
 
@@ -18,20 +18,20 @@ foreign import data StatusBarIOS :: # ! -> !
 newtype TabBarItemIOS = TabBarItemIOS ReactElement
 
 tabBarItemIOS :: Array TabBarItemPropsIOS -> Array Props -> ReactElement -> TabBarItemIOS
-tabBarItemIOS tabBarItemProps props = TabBarItemIOS <<< createElementOneChild tabBarItemIOSClass combinedProps
+tabBarItemIOS tabBarItemProps props element = TabBarItemIOS $ createNativeElement tabBarItemIOSClass combinedProps [element]
     where
         combinedProps = (map unwrap tabBarItemProps) ++ props
         unwrap (TabBarItemPropsIOS p) = p
 
 tabBarIOS :: Array TabBarPropsIOS -> Array Props -> Array TabBarItemIOS -> ReactElement
-tabBarIOS tabBarProps props items = createElement tabBarIOSClass combinedProps $ map unwrap2 items
+tabBarIOS tabBarProps props items = createNativeElement tabBarIOSClass combinedProps $ map unwrap2 items
     where
         combinedProps = (map unwrap tabBarProps) ++ props
         unwrap (TabBarPropsIOS p) = p
         unwrap2 (TabBarItemIOS i) = i
 
 navigatorIOS :: forall a. Array NavigationBarPropsIOS -> Array Props -> NavigatorRoute a -> ReactElement
-navigatorIOS navigationBarProps props route = createElementNoChild navigatorIOSClass combinedProps
+navigatorIOS navigationBarProps props route = createNativeElement navigatorIOSClass combinedProps []
     where
         combinedProps = (map unwrap navigationBarProps) ++ props ++ ([unsafeMkProps "initialRoute" $ unwrap2 route])
         unwrap (NavigationBarPropsIOS n) = n

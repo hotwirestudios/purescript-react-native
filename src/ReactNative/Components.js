@@ -54,25 +54,14 @@ function getProps(props) {
     return p;
 }
 
-exports.createElement = function(clazz) {
+exports.createNativeElement = function(clazz) {
     return function(props) {
         return function(children) {
+            if (children.length == 1) {
+                return React.createElement(clazz, getProps(props), children[0]);
+            }
             return React.createElement(clazz, getProps(props), children);
         }
-    }
-};
-
-exports.createElementOneChild = function(clazz) {
-    return function(props) {
-        return function(child) {
-            return React.createElement(clazz, getProps(props), child);
-        }
-    }
-};
-
-exports.createElementNoChild = function(clazz) {
-    return function(props) {
-        return React.createElement(clazz, getProps(props));
     }
 };
 

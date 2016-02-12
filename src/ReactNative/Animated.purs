@@ -2,7 +2,7 @@ module ReactNative.Animated where
 
 import React (ReactClass, ReactElement)
 import React.DOM.Props (Props)
-import ReactNative.Components (createElement)
+import ReactNative.Components (createNativeElement)
 
 -- foreign import data AnimatedImplementation :: * -> *
 foreign import data AnimatedInterpolation :: *
@@ -19,4 +19,4 @@ type AnimatedImplementation = {
 }
 
 animatedView :: Array Props -> Array ReactElement -> ReactElement
-animatedView = createElement animatedViewClass
+animatedView = createNativeElement animatedViewClass
