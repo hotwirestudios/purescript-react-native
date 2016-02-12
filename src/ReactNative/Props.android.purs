@@ -25,7 +25,7 @@ onPageSelected f = unsafeMkProps "onPageSelected" (handle f)
 type PageScrollEvent = {
     nativeEvent :: {
         offset :: Number,
-        position :: Number
+        position :: Int
     }
 }
 
