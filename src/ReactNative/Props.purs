@@ -5,6 +5,7 @@ import Control.Monad.Eff (Eff())
 import Data.Function (mkFn3, mkFn4)
 import React (ReactElement(), ReactClass, Event(), EventHandlerContext(), handle, ReactThis, Write, Read, ReactRefs)
 import React.DOM.Props (Props(), unsafeMkProps)
+import ReactNative (Color(..))
 import ReactNative.Components (ListViewDataSource())
 
 type RenderRowFn = forall rowData highlightFn. rowData -> String -> String -> highlightFn -> ReactElement
@@ -80,3 +81,9 @@ ref = unsafeMkProps "ref"
 
 ref' :: forall props state. ReactThis props state -> String -> Props
 ref' key this = ref $ storeRef key this
+
+titleColor :: Color -> Props
+titleColor (Color c) = unsafeMkProps "titleColor" c
+
+logo :: AssetId -> Props
+logo (AssetId a) = unsafeMkProps "logo" a
