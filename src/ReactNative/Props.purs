@@ -1,9 +1,9 @@
 module ReactNative.Props where
 
-import Prelude (Unit, (<<<))
+import Prelude (Unit, (<<<), ($))
 import Control.Monad.Eff (Eff())
 import Data.Function (mkFn3, mkFn4)
-import React (ReactElement(), ReactClass, Event(), EventHandlerContext(), handle)
+import React (ReactElement(), ReactClass, Event(), EventHandlerContext(), handle, ReactThis, Write, Read, ReactRefs)
 import React.DOM.Props (Props(), unsafeMkProps)
 import ReactNative.Components (ListViewDataSource())
 
@@ -71,3 +71,12 @@ data NavigatorRoute props = NavigatorRoute {
     component :: ReactClass props,
     passProps :: props
 }
+
+foreign import storeRef :: forall a props state eff. ReactThis props state -> String -> a -> Eff (refs :: ReactRefs (write :: Write) | eff) Unit
+foreign import getRef :: forall props state eff. ReactThis props state -> String -> Eff (refs :: ReactRefs (read :: Read) | eff) ReactElement
+
+ref :: forall a eff. (a -> Eff (refs :: ReactRefs (write :: Write) | eff) Unit) -> Props
+ref = unsafeMkProps "ref"
+
+ref' :: forall props state. ReactThis props state -> String -> Props
+ref' key this = ref $ storeRef key this
