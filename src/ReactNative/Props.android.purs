@@ -1,14 +1,26 @@
 module ReactNative.Props.Android where
 
+import Prelude (unit, Unit)
 import React (EventHandlerContext, handle)
 import React.DOM.Props (Props, unsafeMkProps)
+import ReactNative (Color(..))
 
 foreign import data NativeFeedbackBackground :: *
-foreign import selectableBackground :: NativeFeedbackBackground
-foreign import selectableBackgroundBorderless :: NativeFeedbackBackground
+foreign import selectableBackground_ :: Unit -> NativeFeedbackBackground
+foreign import selectableBackgroundBorderless_ :: Unit -> NativeFeedbackBackground
+foreign import ripple_ :: String -> Boolean -> NativeFeedbackBackground
 
 background :: NativeFeedbackBackground -> Props
 background = unsafeMkProps "background"
+
+selectableBackground :: NativeFeedbackBackground
+selectableBackground = selectableBackground_ unit
+
+selectableBackgroundBorderless :: NativeFeedbackBackground
+selectableBackgroundBorderless = selectableBackgroundBorderless_ unit
+
+ripple :: Color -> Boolean -> NativeFeedbackBackground
+ripple (Color c) = ripple_ c
 
 initialPage :: Int -> Props
 initialPage = unsafeMkProps "initialPage"
