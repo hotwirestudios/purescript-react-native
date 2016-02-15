@@ -87,3 +87,12 @@ titleColor (Color c) = unsafeMkProps "titleColor" c
 
 logo :: AssetId -> Props
 logo (AssetId a) = unsafeMkProps "logo" a
+
+contentInsetStart :: Number -> Props
+contentInsetStart = unsafeMkProps "contentInsetStart"
+
+subtitle :: String -> Props
+subtitle = unsafeMkProps "subtitle"
+
+subtitleColor :: Color -> Props
+subtitleColor (Color c) = unsafeMkProps "subtitleColor" c
