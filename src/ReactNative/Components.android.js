@@ -8,6 +8,8 @@ exports.toolbarAndroidClass = require('react-native').ToolbarAndroid;
 
 exports.setPage = function(viewPager) {
     return function (pageIndex) {
-        viewPager.setPage(pageIndex);
+        return function () {
+            viewPager.setPage(pageIndex);
+        }
     }
 }
