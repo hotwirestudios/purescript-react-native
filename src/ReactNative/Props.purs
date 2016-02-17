@@ -1,12 +1,13 @@
 module ReactNative.Props where
 
 import Prelude (Unit, (<<<), ($))
-import Control.Monad.Eff (Eff())
+import Control.Monad.Eff (Eff)
 import Data.Function (mkFn3, mkFn4)
-import React (ReactElement(), ReactClass, Event(), EventHandlerContext(), handle, ReactThis, Write, Read, ReactRefs)
-import React.DOM.Props (Props(), unsafeMkProps)
+import React (ReactThis, Write, ReactRefs, ReactElement, Read, EventHandlerContext, Event, handle)
+import React.DOM.Props (Props, unsafeMkProps)
 import ReactNative (Color(..))
-import ReactNative.Components (ListViewDataSource())
+
+foreign import data ListViewDataSource :: *
 
 type RenderRowFn = forall rowData highlightFn. rowData -> String -> String -> highlightFn -> ReactElement
 type RenderSeparatorFn = String -> String -> Boolean -> ReactElement
@@ -49,29 +50,19 @@ onSubmitEditing f = unsafeMkProps "onSubmitEditing" (handle f)
 onChangeText :: forall eff props state result. (String -> EventHandlerContext eff props state result) -> Props
 onChangeText f = unsafeMkProps "onChangeText" (handle f)
 
-type LayoutEvent = {
-    nativeEvent :: {
-        layout :: {
-            x :: Number,
-            y :: Number,
-            width :: Number,
-            height :: Number}
+type LayoutEvent =
+    { nativeEvent ::
+        { layout ::
+            { x :: Number
+            , y :: Number
+            , width :: Number
+            , height :: Number
+            }
+        }
     }
-}
 
 onLayout :: forall eff props state result. (LayoutEvent -> EventHandlerContext eff props state result) -> Props
 onLayout f = unsafeMkProps "onLayout" (handle f)
-
-data ComponentProps a = ComponentProps {
-    customProps :: a,
-    props :: Array Props
-}
-
-data NavigatorRoute props = NavigatorRoute {
-    title :: String,
-    component :: ReactClass props,
-    passProps :: props
-}
 
 foreign import storeRef :: forall a props state eff. ReactThis props state -> String -> a -> Eff (refs :: ReactRefs (write :: Write) | eff) Unit
 foreign import getRef :: forall props state eff. ReactThis props state -> String -> Eff (refs :: ReactRefs (read :: Read) | eff) ReactElement

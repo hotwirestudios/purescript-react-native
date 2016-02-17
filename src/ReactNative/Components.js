@@ -54,13 +54,24 @@ function getProps(props) {
     return p;
 }
 
+function createNativeElement (clazz, props, childOrChildren) {
+    var p = getProps(props);
+    var element = React.createElement(clazz, p, childOrChildren);
+    if (p.value0 !== undefined && p.value0.standardProps !== undefined) {
+        p.value0.standardProps = function () {
+            return element.props;
+        }
+    }
+    return element;
+}
+
 exports.createNativeElement = function(clazz) {
     return function(props) {
         return function(children) {
             if (children.length == 1) {
-                return React.createElement(clazz, getProps(props), children[0]);
+                return createNativeElement(clazz, props, children[0]);
             }
-            return React.createElement(clazz, getProps(props), children);
+            return createNativeElement(clazz, props, children);
         }
     }
 };

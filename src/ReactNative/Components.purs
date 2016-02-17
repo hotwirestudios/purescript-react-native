@@ -1,10 +1,11 @@
 module ReactNative.Components where
 
-import Prelude (class Eq)
-import React (ReactClass(), ReactElement())
-import React.DOM.Props (Props())
-
-foreign import data ListViewDataSource :: *
+import Prelude (class Eq, Unit)
+import Data.Maybe (Maybe)
+import Control.Monad.Eff (Eff)
+import React (ReactClass, ReactElement, ReactRefs, ReactProps, ReadOnly)
+import React.DOM.Props (Props)
+import ReactNative.Props (ListViewDataSource)
 
 foreign import createNativeElement :: forall props. ReactClass props -> props -> Array ReactElement -> ReactElement
 foreign import viewClass :: forall props. ReactClass props
@@ -37,3 +38,15 @@ touchableOpacity props element = createNativeElement touchableOpacityClass props
 
 textInput :: Array Props -> ReactElement
 textInput props = createNativeElement textInputClass props []
+
+data ComponentProps customProps props = ComponentProps
+    { customProps :: customProps
+    , props :: Array Props
+    , standardProps :: forall eff. Eff (refs :: ReactRefs ReadOnly, p :: ReactProps | eff) (Maybe props)
+    }
+
+data NavigatorRoute props = NavigatorRoute
+    { title :: String
+    , component :: ReactClass props
+    , passProps :: props
+    }

@@ -4,9 +4,8 @@ import Prelude (Unit, ($), (++), map)
 import Control.Monad.Eff (Eff())
 import React (ReactClass(), ReactElement(), Write)
 import React.DOM.Props (Props(), unsafeMkProps)
-import ReactNative.Components (createNativeElement)
+import ReactNative.Components (createNativeElement, NavigatorRoute(..))
 import ReactNative.Props.IOS (TabBarPropsIOS(..), TabBarItemPropsIOS(..), NavigationBarPropsIOS(..))
-import ReactNative.Props (NavigatorRoute(..))
 
 foreign import tabBarIOSClass :: forall props. ReactClass props
 foreign import tabBarItemIOSClass :: forall props. ReactClass props
@@ -33,7 +32,7 @@ tabBarIOS tabBarProps props items = createNativeElement tabBarIOSClass combinedP
 navigatorIOS :: forall a. Array NavigationBarPropsIOS -> Array Props -> NavigatorRoute a -> ReactElement
 navigatorIOS navigationBarProps props route = createNativeElement navigatorIOSClass combinedProps []
     where
-        combinedProps = (map unwrap navigationBarProps) ++ props ++ ([unsafeMkProps "initialRoute" $ unwrap2 route])
+        combinedProps = (map unwrap navigationBarProps) ++ props ++ [unsafeMkProps "initialRoute" $ unwrap2 route]
         unwrap (NavigationBarPropsIOS n) = n
         unwrap2 (NavigatorRoute r) = {title: r.title, component: r.component, passProps: r.passProps}
 
