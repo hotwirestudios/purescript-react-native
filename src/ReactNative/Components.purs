@@ -1,13 +1,13 @@
 module ReactNative.Components where
 
 import Prelude (class Eq, Unit)
-import Data.Maybe (Maybe)
 import Control.Monad.Eff (Eff)
-import React (ReactClass, ReactElement, ReactRefs, ReactProps, ReadOnly)
+import React (ReactClass, ReactElement, ReactRefs, ReactProps, ReadOnly, ReactSpec)
 import React.DOM.Props (Props)
 import ReactNative.Props (ListViewDataSource)
 
 foreign import createNativeElement :: forall props. ReactClass props -> props -> Array ReactElement -> ReactElement
+foreign import createNativeClass :: forall props state eff. ReactSpec props state eff -> ReactClass props
 foreign import viewClass :: forall props. ReactClass props
 foreign import textElem :: String -> ReactElement
 foreign import textClass :: forall props. ReactClass props
@@ -41,12 +41,45 @@ textInput props = createNativeElement textInputClass props []
 
 data ComponentProps customProps props = ComponentProps
     { customProps :: customProps
-    , props :: Array Props
-    , standardProps :: forall eff. Eff (refs :: ReactRefs ReadOnly, p :: ReactProps | eff) (Maybe props)
+    , initialProps :: Array Props
+    , props :: forall eff. Eff (refs :: ReactRefs ReadOnly, props :: ReactProps | eff) props
     }
+
+componentProps :: forall customProps props. customProps -> Array Props -> ComponentProps customProps props
+componentProps customProps props = ComponentProps
+    { customProps: customProps
+    , initialProps: props
+    , props: uninitializedProps
+    }
+
+foreign import unsafeThrowPropsNotInitializedException :: forall eff props. Eff (refs :: ReactRefs ReadOnly, props :: ReactProps | eff) props
+
+uninitializedProps :: forall eff props. Eff (refs :: ReactRefs ReadOnly, props :: ReactProps | eff) props
+uninitializedProps = unsafeThrowPropsNotInitializedException
+
+type NavigatorChildProps a =
+    { navigator :: ReactElement
+    | a
+    }
+
+foreign import data Navigate :: !
 
 data NavigatorRoute props = NavigatorRoute
     { title :: String
     , component :: ReactClass props
     , passProps :: props
     }
+
+newtype Navigator props = Navigator
+    { push :: forall eff. NavigatorRoute props -> Eff (navigate :: Navigate | eff) Unit
+    }
+
+foreign import pushRoute :: forall route eff. ReactElement -> route -> Eff (navigate :: Navigate | eff) Unit
+
+navigationHelper :: forall a props. NavigatorChildProps a -> Navigator props
+navigationHelper props = Navigator
+    { push: push
+    }
+    where
+        push :: forall eff. NavigatorRoute props -> Eff (navigate :: Navigate | eff) Unit
+        push (NavigatorRoute r) = pushRoute props.navigator r

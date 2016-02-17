@@ -45,9 +45,9 @@ function getProps(props) {
         if (props.length > 0) {
             p = mkProps({})(props);
         }
-    }  else if (props.value0 !== undefined && props.value0.props !== undefined && props.value0.customProps !== undefined) {
+    }  else if (props.value0 !== undefined && props.value0.initialProps !== undefined && props.value0.customProps !== undefined) {
         var result = {value0: props.value0};
-        p = mkProps(result)(props.value0.props);
+        p = mkProps(result)(props.value0.initialProps);
     } else {
         p = props;
     }
@@ -56,13 +56,7 @@ function getProps(props) {
 
 function createNativeElement (clazz, props, childOrChildren) {
     var p = getProps(props);
-    var element = React.createElement(clazz, p, childOrChildren);
-    if (p.value0 !== undefined && p.value0.standardProps !== undefined) {
-        p.value0.standardProps = function () {
-            return element.props;
-        }
-    }
-    return element;
+    return require('react-native').createElement(clazz, p, childOrChildren);
 }
 
 exports.createNativeElement = function(clazz) {
@@ -74,6 +68,67 @@ exports.createNativeElement = function(clazz) {
             return createNativeElement(clazz, props, children);
         }
     }
+};
+
+function fixProps(element, props) {
+    if (props.value0 !== undefined && props.value0.props !== undefined) {
+        props.value0.props = function () {
+            return element.props;
+        }
+    }
+}
+
+function createNativeClass(spec) {
+    var result = {
+        displayName: spec.displayName,
+        render: function(){
+            return spec.render(this)();
+        },
+        getInitialState: function(){
+            return {
+                state: spec.getInitialState(this)()
+            };
+        },
+        componentWillMount: function(){
+            console.log(this.props);
+            fixProps(this, this.props);
+            console.log(this.props);
+            return spec.componentWillMount(this)();
+        },
+        componentDidMount: function(){
+            return spec.componentDidMount(this)();
+        },
+        componentWillReceiveProps: function(nextProps){
+            return spec.componentWillReceiveProps(this)(nextProps)();
+        },
+        shouldComponentUpdate: function(nextProps, nextState){
+            return spec.shouldComponentUpdate(this)(nextProps)(nextState.state)();
+        },
+        componentWillUpdate: function(nextProps, nextState){
+            return spec.componentWillUpdate(this)(nextProps)(nextState.state)();
+        },
+        componentDidUpdate: function(prevProps, prevState){
+            return spec.componentDidUpdate(this)(prevProps)(prevState.state)();
+        },
+        componentWillUnmount: function(){
+            return spec.componentWillUnmount(this)();
+        }
+    };
+
+    return require('react-native').createClass(result);
+}
+exports.createNativeClass = createNativeClass;
+
+exports.pushRoute = function (navigator) {
+    return function (route) {
+        return function() {
+            navigator.push(route);
+        };
+    };
+};
+
+exports.unsafeThrowPropsNotInitializedException = function() {
+    throw "Pass the ComponentProps to a createNativeElement call. Afterwards the props will be available. Before that, use initialProps or customProps to access your props values.";
 };
 
 exports.textElem = function(text) {

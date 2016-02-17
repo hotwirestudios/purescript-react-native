@@ -1,10 +1,10 @@
 module ReactNative.Components.IOS where
 
 import Prelude (Unit, ($), (++), map)
-import Control.Monad.Eff (Eff())
-import React (ReactClass(), ReactElement(), Write)
-import React.DOM.Props (Props(), unsafeMkProps)
-import ReactNative.Components (createNativeElement, NavigatorRoute(..))
+import Control.Monad.Eff (Eff)
+import React (ReactClass, ReactElement, Write)
+import React.DOM.Props (Props, unsafeMkProps)
+import ReactNative.Components (NavigatorRoute(NavigatorRoute), createNativeElement)
 import ReactNative.Props.IOS (TabBarPropsIOS(..), TabBarItemPropsIOS(..), NavigationBarPropsIOS(..))
 
 foreign import tabBarIOSClass :: forall props. ReactClass props
@@ -34,7 +34,7 @@ navigatorIOS navigationBarProps props route = createNativeElement navigatorIOSCl
     where
         combinedProps = (map unwrap navigationBarProps) ++ props ++ [unsafeMkProps "initialRoute" $ unwrap2 route]
         unwrap (NavigationBarPropsIOS n) = n
-        unwrap2 (NavigatorRoute r) = {title: r.title, component: r.component, passProps: r.passProps}
+        unwrap2 (NavigatorRoute r) = r
 
 data StatusBarStyleIOS = Default | LightContent
 
