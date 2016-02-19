@@ -8,6 +8,7 @@ exports.listViewClass = require('react-native').ListView;
 exports.touchableHighlightClass = require('react-native').TouchableHighlight;
 exports.touchableOpacityClass = require('react-native').TouchableOpacity;
 exports.textInputClass = require('react-native').TextInput;
+exports.navigatorClass = require('react-native').Navigator;
 
 exports.listViewDataSource = function(dict){
   return function(items){
@@ -90,15 +91,14 @@ function createNativeClass(spec) {
             };
         },
         componentWillMount: function(){
-            console.log(this.props);
             fixProps(this, this.props);
-            console.log(this.props);
             return spec.componentWillMount(this)();
         },
         componentDidMount: function(){
             return spec.componentDidMount(this)();
         },
         componentWillReceiveProps: function(nextProps){
+            fixProps(this, nextProps);
             return spec.componentWillReceiveProps(this)(nextProps)();
         },
         shouldComponentUpdate: function(nextProps, nextState){
@@ -124,6 +124,13 @@ exports.pushRoute = function (navigator) {
         return function() {
             navigator.push(route);
         };
+    };
+};
+
+exports.setNavigator = function (props) {
+    return function (navigator) {
+        props.value0.initialProps.push({navigator: navigator});
+        return props;
     };
 };
 

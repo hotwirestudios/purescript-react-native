@@ -1,9 +1,10 @@
 module ReactNative.Components where
 
-import Prelude (class Eq, Unit)
+import Prelude (class Eq, Unit, ($), (<>))
+import Data.Function (mkFn2)
 import Control.Monad.Eff (Eff)
 import React (ReactClass, ReactElement, ReactRefs, ReactProps, ReadOnly, ReactSpec)
-import React.DOM.Props (Props)
+import React.DOM.Props (Props, unsafeMkProps)
 import ReactNative.Props (ListViewDataSource)
 
 foreign import createNativeElement :: forall props. ReactClass props -> props -> Array ReactElement -> ReactElement
@@ -17,6 +18,7 @@ foreign import touchableOpacityClass :: forall props. ReactClass props
 foreign import listViewDataSource :: forall a. (Eq a) => Array a -> ListViewDataSource
 foreign import cloneWithRows :: forall a. ListViewDataSource -> Array a -> ListViewDataSource
 foreign import textInputClass :: forall props. ReactClass props
+foreign import navigatorClass :: forall props. ReactClass props
 
 view :: Array Props -> Array ReactElement -> ReactElement
 view = createNativeElement viewClass
@@ -64,11 +66,13 @@ type NavigatorChildProps a =
 
 foreign import data Navigate :: !
 
-data NavigatorRoute props = NavigatorRoute
+type NavigatorRouteType props =
     { title :: String
     , component :: ReactClass props
     , passProps :: props
     }
+
+data NavigatorRoute props = NavigatorRoute (NavigatorRouteType props)
 
 newtype Navigator props = Navigator
     { push :: forall eff. NavigatorRoute props -> Eff (navigate :: Navigate | eff) Unit
@@ -83,3 +87,16 @@ navigationHelper props = Navigator
     where
         push :: forall eff. NavigatorRoute props -> Eff (navigate :: Navigate | eff) Unit
         push (NavigatorRoute r) = pushRoute props.navigator r
+
+foreign import setNavigator :: forall customProps props. (ComponentProps customProps (NavigatorChildProps props)) -> ReactElement -> (ComponentProps customProps (NavigatorChildProps props))
+
+navigator :: forall customProps props. NavigatorRoute (ComponentProps customProps (NavigatorChildProps props)) -> (NavigatorRoute (ComponentProps customProps (NavigatorChildProps props)) -> ReactElement -> ReactElement) -> Array Props -> ReactElement
+navigator route render props =
+    createNativeElement navigatorClass combinedProps []
+    where
+        combinedProps = props <> [initialRoute route, renderScene]
+        initialRoute (NavigatorRoute r) = unsafeMkProps "initialRoute" r
+        renderScene = unsafeMkProps "renderScene" callback
+        callback = mkFn2 $ \r n -> do
+            let nr = (NavigatorRoute (r {passProps = setNavigator r.passProps n}))
+            render nr n

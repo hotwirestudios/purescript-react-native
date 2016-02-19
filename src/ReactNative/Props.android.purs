@@ -25,21 +25,21 @@ ripple (Color c) = ripple_ c
 initialPage :: Int -> Props
 initialPage = unsafeMkProps "initialPage"
 
-type PageSelectedEvent = {
-    nativeEvent :: {
-        position :: Int
+type PageSelectedEvent =
+    { nativeEvent ::
+        { position :: Int
+        }
     }
-}
 
 onPageSelected :: forall eff props state result. (PageSelectedEvent -> EventHandlerContext eff props state result) -> Props
 onPageSelected f = unsafeMkProps "onPageSelected" (handle f)
 
-type PageScrollEvent = {
-    nativeEvent :: {
-        offset :: Number,
-        position :: Int
+type PageScrollEvent =
+    { nativeEvent ::
+        { offset :: Number
+        , position :: Int
+        }
     }
-}
 
 onPageScroll :: forall eff props state result. (PageScrollEvent -> EventHandlerContext eff props state result) -> Props
 onPageScroll f = unsafeMkProps "onPageScroll" (handle f)
