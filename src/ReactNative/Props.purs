@@ -65,7 +65,11 @@ onLayout :: forall eff props state result. (LayoutEvent -> EventHandlerContext e
 onLayout f = unsafeMkProps "onLayout" (handle f)
 
 foreign import storeRef :: forall a props state eff. ReactThis props state -> String -> a -> Eff (refs :: ReactRefs (write :: Write) | eff) Unit
-foreign import getRef :: forall props state eff. ReactThis props state -> String -> Eff (refs :: ReactRefs (read :: Read) | eff) ReactElement
+foreign import getRef :: forall props state access eff. ReactThis props state -> String -> Eff (refs :: ReactRefs (read :: Read | access) | eff) ReactElement
+foreign import getRef_ :: forall props state access eff props1 state1. ReactThis props state -> String -> Eff (refs :: ReactRefs (read :: Read | access) | eff) (ReactThis props1 state1)
+
+getRef' :: forall props state access eff props1 state1. ReactThis props state -> String -> Eff (refs :: ReactRefs (read :: Read | access) | eff) (ReactThis props1 state1)
+getRef' = getRef_
 
 ref :: forall a eff. (a -> Eff (refs :: ReactRefs (write :: Write) | eff) Unit) -> Props
 ref = unsafeMkProps "ref"

@@ -23,3 +23,11 @@ exports.getRef = function(reactThis) {
         };
     };
 };
+
+exports.getRef_ = function(reactThis) {
+    return function (key) {
+        return function () {
+            return reactThis[key];
+        };
+    };
+};
