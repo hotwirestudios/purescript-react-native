@@ -48,6 +48,11 @@ function getProps(props) {
         }
     }  else if (props.value0 !== undefined && props.value0.initialProps !== undefined && props.value0.customProps !== undefined) {
         var result = {value0: props.value0};
+        for (let key in props) {
+            if (key !== "value0") {
+                result[key] = props[key];
+            }
+        }
         p = mkProps(result)(props.value0.initialProps);
     } else {
         p = props;
@@ -91,6 +96,8 @@ function createNativeClass(spec) {
             };
         },
         componentWillMount: function(){
+            // need to do this because of NavigatorIOS (otherwise initialProps are not considered)
+            this.props = getProps(this.props);
             fixProps(this, this.props);
             return spec.componentWillMount(this)();
         },
