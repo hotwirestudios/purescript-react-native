@@ -1,9 +1,10 @@
 module ReactNative.Components where
 
-import Prelude (class Eq, Unit, ($), (<>))
+import Prelude (class Eq, Unit, ($), (<>), bind, pure, unit)
+import Data.Array (snoc)
 import Data.Function (mkFn2)
 import Control.Monad.Eff (Eff)
-import React (ReactClass, ReactElement, ReactRefs, ReactProps, ReadOnly, ReactSpec)
+import React (ReactElement, ReadWrite, ReactState, ReadOnly, ReactRefs, ReactProps, ReactClass, ReactSpec, ReactThis)
 import React.DOM.Props (Props, unsafeMkProps)
 import ReactNative.Props (ListViewDataSource)
 
@@ -66,31 +67,43 @@ type NavigatorChildProps a =
 
 foreign import data Navigate :: !
 
-type NavigatorRouteType props =
+type NavigatorRouteType customProps props =
     { title :: String
-    , component :: ReactClass props
-    , passProps :: props
+    , component :: ReactClass (ComponentProps customProps (NavigatorChildProps props))
+    , passProps :: ComponentProps customProps (NavigatorChildProps props)
     }
 
-data NavigatorRoute props = NavigatorRoute (NavigatorRouteType props)
+data NavigatorRoute customProps props = NavigatorRoute (NavigatorRouteType customProps props)
 
-newtype Navigator props = Navigator
-    { push :: forall eff. NavigatorRoute props -> Eff (navigate :: Navigate | eff) Unit
+newtype Navigator eff = Navigator
+    { push :: forall customProps props. ReactElement -> NavigatorRoute customProps props -> Eff (props :: ReactProps, refs :: ReactRefs ReadOnly, state :: ReactState ReadWrite, navigate :: Navigate | eff) Unit
     }
 
 foreign import pushRoute :: forall route eff. ReactElement -> route -> Eff (navigate :: Navigate | eff) Unit
+foreign import popRoute :: forall eff. ReactElement -> Eff (navigate :: Navigate | eff) Unit
 
-navigationHelper :: forall a props. NavigatorChildProps a -> Navigator props
-navigationHelper props = Navigator
-    { push: push
-    }
+foreign import getNavigationHelper :: forall props state eff eff1. ReactThis props state -> Eff (props :: ReactProps | eff) (Navigator eff1)
+
+navigationHelper :: forall eff result. (ReactElement -> NavigationEvent -> Eff (props :: ReactProps, refs :: ReactRefs ReadOnly, state :: ReactState ReadWrite, navigate :: Navigate | eff) result) -> Props
+navigationHelper handler = unsafeMkProps "navigationHelper" navi
     where
-        push :: forall eff. NavigatorRoute props -> Eff (navigate :: Navigate | eff) Unit
-        push (NavigatorRoute r) = pushRoute props.navigator r
+        navi = (Navigator
+                    { push: push
+                    })
+        push :: forall customProps props. ReactElement -> NavigatorRoute customProps props -> Eff (props :: ReactProps, refs :: ReactRefs ReadOnly, state :: ReactState ReadWrite, navigate :: Navigate | eff) Unit
+        push element (NavigatorRoute r) = do
+            pushRoute element $ adjustRoute r
+            handler element Push
+            pure unit
+            where
+                adjustRoute r = r { passProps = adjustPassProps r.passProps }
+                adjustPassProps (ComponentProps compProps) = ComponentProps (compProps {initialProps = snoc compProps.initialProps $ navigationHelper handler})
+
+data NavigationEvent = Push
 
 foreign import setNavigator :: forall customProps props. (ComponentProps customProps (NavigatorChildProps props)) -> ReactElement -> (ComponentProps customProps (NavigatorChildProps props))
 
-navigator :: forall customProps props. NavigatorRoute (ComponentProps customProps (NavigatorChildProps props)) -> (NavigatorRoute (ComponentProps customProps (NavigatorChildProps props)) -> ReactElement -> ReactElement) -> Array Props -> ReactElement
+navigator :: forall customProps props. NavigatorRoute customProps props -> (NavigatorRoute customProps props -> ReactElement -> ReactElement) -> Array Props -> ReactElement
 navigator route render props =
     createNativeElement navigatorClass combinedProps []
     where

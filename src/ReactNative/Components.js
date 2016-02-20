@@ -127,10 +127,22 @@ exports.pushRoute = function (navigator) {
     };
 };
 
+exports.popRoute = function (navigator) {
+    return function() {
+        navigator.pop();
+    };
+};
+
 exports.setNavigator = function (props) {
     return function (navigator) {
         props.value0.initialProps.push({navigator: navigator});
         return props;
+    };
+};
+
+exports.getNavigationHelper = function(reactThis) {
+    return function() {
+        return reactThis.props.navigationHelper;
     };
 };
 

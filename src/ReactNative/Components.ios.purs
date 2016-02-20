@@ -29,7 +29,7 @@ tabBarIOS tabBarProps props items = createNativeElement tabBarIOSClass combinedP
         unwrap (TabBarPropsIOS p) = p
         unwrap2 (TabBarItemIOS i) = i
 
-navigatorIOS :: forall a. Array NavigationBarPropsIOS -> Array Props -> NavigatorRoute a -> ReactElement
+navigatorIOS :: forall customProps props. Array NavigationBarPropsIOS -> Array Props -> NavigatorRoute customProps props -> ReactElement
 navigatorIOS navigationBarProps props route = createNativeElement navigatorIOSClass combinedProps []
     where
         combinedProps = (map unwrap navigationBarProps) ++ props ++ [unsafeMkProps "initialRoute" $ unwrap2 route]
