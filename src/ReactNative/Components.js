@@ -59,6 +59,7 @@ function getProps(props) {
     }
     return p;
 }
+exports.passPropsToProps = getProps;
 
 function createNativeElement (clazz, props, childOrChildren) {
     var p = getProps(props);
@@ -96,8 +97,6 @@ function createNativeClass(spec) {
             };
         },
         componentWillMount: function(){
-            // need to do this because of NavigatorIOS (otherwise initialProps are not considered)
-            this.props = getProps(this.props);
             fixProps(this, this.props);
             return spec.componentWillMount(this)();
         },

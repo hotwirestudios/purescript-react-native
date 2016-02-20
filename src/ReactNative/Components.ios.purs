@@ -4,7 +4,7 @@ import Prelude (Unit, ($), (++), map)
 import Control.Monad.Eff (Eff)
 import React (ReactClass, ReactElement, Write)
 import React.DOM.Props (Props, unsafeMkProps)
-import ReactNative.Components (NavigatorRoute(NavigatorRoute), createNativeElement)
+import ReactNative.Components (NavigatorRoute(NavigatorRoute), createNativeElement, passPropsToProps)
 import ReactNative.Props.IOS (TabBarPropsIOS(..), TabBarItemPropsIOS(..), NavigationBarPropsIOS(..))
 
 foreign import tabBarIOSClass :: forall props. ReactClass props
@@ -34,7 +34,7 @@ navigatorIOS navigationBarProps props route = createNativeElement navigatorIOSCl
     where
         combinedProps = (map unwrap navigationBarProps) ++ props ++ [unsafeMkProps "initialRoute" $ unwrap2 route]
         unwrap (NavigationBarPropsIOS n) = n
-        unwrap2 (NavigatorRoute r) = r
+        unwrap2 (NavigatorRoute r) = r { passProps = passPropsToProps r.passProps }
 
 data StatusBarStyleIOS = Default | LightContent
 

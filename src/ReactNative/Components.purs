@@ -42,6 +42,8 @@ touchableOpacity props element = createNativeElement touchableOpacityClass props
 textInput :: Array Props -> ReactElement
 textInput props = createNativeElement textInputClass props []
 
+foreign import passPropsToProps :: forall props. props -> props
+
 data ComponentProps customProps props = ComponentProps
     { customProps :: customProps
     , initialProps :: Array Props
@@ -96,7 +98,7 @@ navigationHelper handler = unsafeMkProps "navigationHelper" navi
             handler element Push
             pure unit
             where
-                adjustRoute r = r { passProps = adjustPassProps r.passProps }
+                adjustRoute r = r { passProps = passPropsToProps $ adjustPassProps r.passProps }
                 adjustPassProps (ComponentProps compProps) = ComponentProps (compProps {initialProps = snoc compProps.initialProps $ navigationHelper handler})
 
 data NavigationEvent = Push
