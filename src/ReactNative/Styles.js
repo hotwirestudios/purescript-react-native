@@ -29,7 +29,21 @@ exports.mkCombinedStyleProp = function(key) {
             return exports.unsafeMkStyleProp(key)([styleId, arrayToObject(styleProps)]);
         }
     }
-}
+};
+
+exports.mkCombineStyleWithThisStyle = function(reactThis) {
+    return function(key) {
+        return function(styleId) {
+            return function() {
+                var style = {};
+                if (reactThis.props !== undefined && reactThis.props.style !== undefined) {
+                    style = reactThis.props.style;
+                }
+                return exports.unsafeMkStyleProp(key)([styleId, style]);
+            };
+        };
+    };
+};
 
 exports.unsafeMkStyleProps = function(key) {
     return function(value) {

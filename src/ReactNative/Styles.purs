@@ -1,5 +1,7 @@
 module ReactNative.Styles where
 
+import Control.Monad.Eff (Eff)
+import React (ReactProps, ReactThis)
 import React.DOM.Props (Props(), unsafeMkProps)
 import ReactNative (Color(..))
 
@@ -13,6 +15,7 @@ foreign import getStyleId :: StyleSheet -> String -> StyleId
 foreign import unsafeMkStyleProp :: forall val. String -> val -> StyleProp
 foreign import unsafeMkStyleProps :: forall val. String -> val -> Props
 foreign import mkCombinedStyleProp :: String -> StyleId -> Array StyleProp -> Props
+foreign import mkCombineStyleWithThisStyle :: forall props state eff. ReactThis props state -> String -> StyleId -> Eff (props :: ReactProps | eff) Props
 
 class HasStyleKey a where
     styleKey :: a -> String
@@ -28,6 +31,9 @@ style sheet key = unsafeMkProps "style" (getStyleIdByKey sheet key)
 
 combinedStyle :: forall a. (HasStyleKey a) => StyleSheet -> a -> Array StyleProp -> Props
 combinedStyle sheet key = mkCombinedStyleProp "style" (getStyleIdByKey sheet key)
+
+combineStyleWithThisStyle :: forall a props state eff. (HasStyleKey a) => ReactThis props state -> StyleSheet -> a -> Eff (props :: ReactProps | eff) Props
+combineStyleWithThisStyle ctx sheet key = mkCombineStyleWithThisStyle ctx "style" (getStyleIdByKey sheet key)
 
 styleInline :: Array StyleProp -> Props
 styleInline = unsafeMkStyleProps "style"
