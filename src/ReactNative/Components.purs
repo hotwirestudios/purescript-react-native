@@ -47,7 +47,7 @@ foreign import passPropsToProps :: forall props. props -> props
 data ComponentProps customProps props = ComponentProps
     { customProps :: customProps
     , initialProps :: Array Props
-    , props :: forall eff. Eff (refs :: ReactRefs ReadOnly, props :: ReactProps | eff) props
+    , props :: forall eff. Eff (props :: ReactProps | eff) props
     }
 
 componentProps :: forall customProps props. customProps -> Array Props -> ComponentProps customProps props
@@ -57,9 +57,9 @@ componentProps customProps props = ComponentProps
     , props: uninitializedProps
     }
 
-foreign import unsafeThrowPropsNotInitializedException :: forall eff props. Eff (refs :: ReactRefs ReadOnly, props :: ReactProps | eff) props
+foreign import unsafeThrowPropsNotInitializedException :: forall eff props. Eff (props :: ReactProps | eff) props
 
-uninitializedProps :: forall eff props. Eff (refs :: ReactRefs ReadOnly, props :: ReactProps | eff) props
+uninitializedProps :: forall eff props. Eff (props :: ReactProps | eff) props
 uninitializedProps = unsafeThrowPropsNotInitializedException
 
 type NavigatorChildProps a =
