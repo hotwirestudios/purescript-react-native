@@ -11,3 +11,13 @@ newtype Color = Color String
 
 colorWithAlpha :: Color -> String -> Color
 colorWithAlpha (Color color) string = Color $ color ++ string
+
+foreign import platformOS :: String
+
+data PlatformOS = IOS | Android
+
+currentPlatformOS :: PlatformOS
+currentPlatformOS =
+    case platformOS of
+        "android" -> Android
+        _ -> IOS

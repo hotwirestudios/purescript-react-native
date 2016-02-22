@@ -9,3 +9,5 @@ exports.registerComponent = function(name){
         };
     };
 };
+
+exports.platformOS = require('react-native').Platform.OS;
