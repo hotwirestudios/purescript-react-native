@@ -1,5 +1,6 @@
 module ReactNative.Styles where
 
+import Prelude ((<$>))
 import Control.Monad.Eff (Eff)
 import React (ReactProps, ReactThis)
 import React.DOM.Props (Props(), unsafeMkProps)
@@ -40,6 +41,9 @@ styleInline = unsafeMkStyleProps "style"
 
 styles :: Array StyleId -> Props
 styles = unsafeMkProps "style"
+
+getStyleIds :: forall a. (HasStyleKey a) => StyleSheet -> Array a -> Array StyleId
+getStyleIds sheet keys = (\key -> getStyleIdByKey sheet key) <$> keys
 
 -- Layout prop types
 
