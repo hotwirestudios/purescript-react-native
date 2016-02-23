@@ -27,6 +27,9 @@ view = createNativeElement viewClass
 text :: Array Props -> String -> ReactElement
 text props str = createNativeElement textClass props [textElem str]
 
+text' :: Array Props -> Array ReactElement -> ReactElement
+text' props = createNativeElement textClass props
+
 textView :: Array Props -> Array ReactElement -> ReactElement
 textView = createNativeElement textClass
 
