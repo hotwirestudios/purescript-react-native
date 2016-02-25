@@ -21,3 +21,8 @@ currentPlatformOS =
     case platformOS of
         "android" -> Android
         _ -> IOS
+
+platformDependentValue :: forall a. a -> a -> a
+platformDependentValue ios android = case currentPlatformOS of
+                                        IOS -> ios
+                                        Android -> android
