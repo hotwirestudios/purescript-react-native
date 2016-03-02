@@ -40,13 +40,17 @@ function mkProps(result) {
     }
 }
 
+function isComponentProps(props) {
+    return props.value0 !== undefined && props.value0.initialProps !== undefined && props.value0.customProps !== undefined
+}
+
 function getProps(props) {
     var p = null;
     if (Array.isArray(props)) {
         if (props.length > 0) {
             p = mkProps({})(props);
         }
-    }  else if (props.value0 !== undefined && props.value0.initialProps !== undefined && props.value0.customProps !== undefined) {
+    }  else if (isComponentProps(props)) {
         var result = {value0: props.value0};
         for (let key in props) {
             if (key !== "value0") {
@@ -69,8 +73,10 @@ function createNativeElement (clazz, props, childOrChildren) {
 exports.createNativeElement = function(clazz) {
     return function(props) {
         return function(children) {
-            if (children.length == 1) {
+            if (children.length === 1) {
                 return createNativeElement(clazz, props, children[0]);
+            } else if (children.length === 0) {
+                return createNativeElement(clazz, props);
             }
             return createNativeElement(clazz, props, children);
         }
