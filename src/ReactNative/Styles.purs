@@ -316,6 +316,9 @@ overflow :: Visibility -> StyleProp
 overflow Visible = unsafeMkStyleProp "overflow" "visible"
 overflow Hidden = unsafeMkStyleProp "overflow" "hidden"
 
+elevation :: Number -> StyleProp
+elevation = unsafeMkStyleProp "elevation"
+
 shadowColor :: Color -> StyleProp
 shadowColor (Color c) = unsafeMkStyleProp "shadowColor" (Color c)
 
