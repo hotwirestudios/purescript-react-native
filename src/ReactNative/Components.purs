@@ -4,7 +4,7 @@ import Prelude (class Eq, Unit, ($), (<>), bind, pure, unit)
 import Data.Array (snoc)
 import Data.Function (mkFn2)
 import Control.Monad.Eff (Eff)
-import React (ReactElement, ReadWrite, ReactState, ReadOnly, ReactRefs, ReactProps, ReactClass, ReactSpec, ReactThis)
+import React (ReactElement, ReadWrite, ReactState, ReadOnly, ReactRefs, ReactProps, ReactClass, ReactSpec, ReactThis, getProps)
 import React.DOM.Props (Props, unsafeMkProps)
 import ReactNative.Props (ListViewDataSource)
 
@@ -60,6 +60,11 @@ data ComponentProps customProps props = ComponentProps
     , initialProps :: Array Props
     , props :: forall eff. Eff (props :: ReactProps | eff) props
     }
+
+getCustomProps :: forall customProps props state eff. ReactThis (ComponentProps customProps props) state -> Eff (props :: ReactProps | eff) customProps
+getCustomProps ctx = do
+    ComponentProps compProps <- getProps ctx
+    pure compProps.customProps
 
 componentProps :: forall customProps props. customProps -> Array Props -> ComponentProps customProps props
 componentProps customProps props = ComponentProps
