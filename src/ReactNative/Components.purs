@@ -11,6 +11,7 @@ import ReactNative.Props (ListViewDataSource)
 foreign import createNativeElement :: forall props. ReactClass props -> props -> Array ReactElement -> ReactElement
 foreign import createNativeClass :: forall props state eff. ReactSpec props state eff -> ReactClass props
 foreign import viewClass :: forall props. ReactClass props
+foreign import imageClass :: forall props. ReactClass props
 foreign import textElem :: String -> ReactElement
 foreign import textClass :: forall props. ReactClass props
 foreign import listViewClass :: forall props. ReactClass props
@@ -24,6 +25,9 @@ foreign import navigatorClass :: forall props. ReactClass props
 
 view :: Array Props -> Array ReactElement -> ReactElement
 view = createNativeElement viewClass
+
+image :: Array Props -> Array ReactElement -> ReactElement
+image = createNativeElement imageClass
 
 text :: Array Props -> String -> ReactElement
 text props str = createNativeElement textClass props [textElem str]

@@ -100,3 +100,18 @@ subtitleColor c = unsafeMkProps "subtitleColor" $ colorToString c
 
 underlayColor :: Color -> Props
 underlayColor c = unsafeMkProps "underlayColor" $ colorToString c
+
+data AssetSource = AssetSourceId AssetId | AssetSourceURI { uri :: String }
+
+source :: AssetSource -> Props
+source (AssetSourceId (AssetId a)) = unsafeMkProps "source" a
+source (AssetSourceURI uri) = unsafeMkProps "source" uri
+
+data ResizeMode = Cover | Contain | Stretch
+
+resizeMode :: ResizeMode -> Props
+resizeMode mode = unsafeMkProps "resizeMode" $
+    case mode of
+        Cover -> "cover"
+        Contain -> "contain"
+        Stretch -> "stretch"
