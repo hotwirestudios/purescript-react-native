@@ -5,7 +5,7 @@ import Control.Monad.Eff (Eff)
 import Data.Function (mkFn3, mkFn4)
 import React (ReactThis, Write, ReactRefs, ReactElement, Read, EventHandlerContext, Event, handle)
 import React.DOM.Props (Props, unsafeMkProps)
-import ReactNative (Color(..))
+import ReactNative (Color, colorToString)
 
 foreign import data ListViewDataSource :: *
 
@@ -84,7 +84,7 @@ ref' :: forall props state. ReactThis props state -> String -> Props
 ref' key this = ref $ storeRef key this
 
 titleColor :: Color -> Props
-titleColor (Color c) = unsafeMkProps "titleColor" c
+titleColor c = unsafeMkProps "titleColor" $ colorToString c
 
 logo :: AssetId -> Props
 logo (AssetId a) = unsafeMkProps "logo" a
@@ -96,7 +96,7 @@ subtitle :: String -> Props
 subtitle = unsafeMkProps "subtitle"
 
 subtitleColor :: Color -> Props
-subtitleColor (Color c) = unsafeMkProps "subtitleColor" c
+subtitleColor c = unsafeMkProps "subtitleColor" $ colorToString c
 
 underlayColor :: Color -> Props
-underlayColor (Color c) = unsafeMkProps "underlayColor" c
+underlayColor c = unsafeMkProps "underlayColor" $ colorToString c

@@ -7,10 +7,15 @@ import React (ReactClass())
 type AppKey = String
 foreign import registerComponent :: forall e props. AppKey -> ReactClass props -> Eff e Unit
 
-newtype Color = Color String
+data Color = Color String | Transparent
+
+colorToString :: Color -> String
+colorToString (Color c) = c
+colorToString Transparent = "#00000000"
 
 colorWithAlpha :: Color -> String -> Color
 colorWithAlpha (Color color) string = Color $ color ++ string
+colorWithAlpha Transparent string = Transparent
 
 foreign import platformOS :: String
 

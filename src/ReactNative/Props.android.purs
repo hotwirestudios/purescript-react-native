@@ -1,9 +1,9 @@
 module ReactNative.Props.Android where
 
-import Prelude (unit, Unit)
+import Prelude (($), unit, Unit)
 import React (EventHandlerContext, handle)
 import React.DOM.Props (Props, unsafeMkProps)
-import ReactNative (Color(..))
+import ReactNative (Color, colorToString)
 
 foreign import data NativeFeedbackBackground :: *
 foreign import selectableBackground_ :: Unit -> NativeFeedbackBackground
@@ -20,7 +20,7 @@ selectableBackgroundBorderless :: NativeFeedbackBackground
 selectableBackgroundBorderless = selectableBackgroundBorderless_ unit
 
 ripple :: Color -> Boolean -> NativeFeedbackBackground
-ripple (Color c) = ripple_ c
+ripple c = ripple_ $ colorToString c
 
 initialPage :: Int -> Props
 initialPage = unsafeMkProps "initialPage"

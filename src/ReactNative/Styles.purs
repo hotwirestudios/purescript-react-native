@@ -1,10 +1,10 @@
 module ReactNative.Styles where
 
-import Prelude ((<$>))
+import Prelude (($), (<$>))
 import Control.Monad.Eff (Eff)
 import React (ReactProps, ReactThis)
 import React.DOM.Props (Props(), unsafeMkProps)
-import ReactNative (Color(..))
+import ReactNative (Color, colorToString)
 
 foreign import data StyleSheet :: *
 foreign import data StyleProp :: *
@@ -177,7 +177,7 @@ flex = unsafeMkStyleProp "flex"
 -- Text style prop types
 
 color :: Color -> StyleProp
-color (Color c) = unsafeMkStyleProp "color" c
+color c = unsafeMkStyleProp "color" $ colorToString c
 
 fontFamily :: String -> StyleProp
 fontFamily = unsafeMkStyleProp "fontFamily"
@@ -248,7 +248,7 @@ textDecorationStyle TextDotted = unsafeMkStyleProp "textDecorationStyle" "dotted
 textDecorationStyle TextDashed = unsafeMkStyleProp "textDecorationStyle" "dashed"
 
 textDecorationColor :: Color -> StyleProp
-textDecorationColor (Color c) = unsafeMkStyleProp "textDecorationColor" c
+textDecorationColor c = unsafeMkStyleProp "textDecorationColor" $ colorToString c
 
 data WritingDirection = WritingDirectionAuto | WritingDirectionLtr | WritingDirectionRtl
 
@@ -270,22 +270,22 @@ backgroundVisibility Visible = unsafeMkStyleProp "backgroundVisibility" "visible
 backgroundVisibility Hidden = unsafeMkStyleProp "backgroundVisibility" "hidden"
 
 backgroundColor :: Color -> StyleProp
-backgroundColor (Color c) = unsafeMkStyleProp "backgroundColor" c
+backgroundColor c = unsafeMkStyleProp "backgroundColor" $ colorToString c
 
 borderColor :: Color -> StyleProp
-borderColor (Color c) = unsafeMkStyleProp "borderColor" c
+borderColor c = unsafeMkStyleProp "borderColor" $ colorToString c
 
 borderTopColor :: Color -> StyleProp
-borderTopColor (Color c) = unsafeMkStyleProp "borderTopColor" c
+borderTopColor c = unsafeMkStyleProp "borderTopColor" $ colorToString c
 
 borderRightColor :: Color -> StyleProp
-borderRightColor (Color c) = unsafeMkStyleProp "borderRightColor" c
+borderRightColor c = unsafeMkStyleProp "borderRightColor" $ colorToString c
 
 borderBottomColor :: Color -> StyleProp
-borderBottomColor (Color c) = unsafeMkStyleProp "borderBottomColor" c
+borderBottomColor c = unsafeMkStyleProp "borderBottomColor" $ colorToString c
 
 borderLeftColor :: Color -> StyleProp
-borderLeftColor (Color c) = unsafeMkStyleProp "borderLeftColor" c
+borderLeftColor c = unsafeMkStyleProp "borderLeftColor" $ colorToString c
 
 borderRadius :: Number -> StyleProp
 borderRadius = unsafeMkStyleProp "borderRadius"
@@ -320,7 +320,7 @@ elevation :: Number -> StyleProp
 elevation = unsafeMkStyleProp "elevation"
 
 shadowColor :: Color -> StyleProp
-shadowColor (Color c) = unsafeMkStyleProp "shadowColor" (Color c)
+shadowColor c = unsafeMkStyleProp "shadowColor" $ colorToString c
 
 shadowOffset :: {width :: Number, height :: Number} -> StyleProp
 shadowOffset = unsafeMkStyleProp "shadowOffset"

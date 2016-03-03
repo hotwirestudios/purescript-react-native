@@ -1,7 +1,7 @@
 module ReactNative.Props.IOS where
 
 import Prelude (($), (<<<))
-import ReactNative (Color(..))
+import ReactNative (Color, colorToString)
 import React.DOM.Props (Props(), unsafeMkProps)
 import ReactNative.Props (AssetId)
 
@@ -10,10 +10,10 @@ newtype TabBarItemPropsIOS = TabBarItemPropsIOS Props
 newtype NavigationBarPropsIOS = NavigationBarPropsIOS Props
 
 tabBarTintColor :: Color -> TabBarPropsIOS
-tabBarTintColor (Color c) = TabBarPropsIOS $ unsafeMkProps "tintColor" c
+tabBarTintColor c = TabBarPropsIOS $ unsafeMkProps "tintColor" $ colorToString c
 
 tabBarBarTintColor :: Color -> TabBarPropsIOS
-tabBarBarTintColor (Color c) = TabBarPropsIOS $ unsafeMkProps "barTintColor" c
+tabBarBarTintColor c = TabBarPropsIOS $ unsafeMkProps "barTintColor" $ colorToString c
 
 tabBarTranslucent :: Boolean -> TabBarPropsIOS
 tabBarTranslucent = TabBarPropsIOS <<< unsafeMkProps "translucent"
@@ -25,13 +25,13 @@ tabSelected :: Boolean -> TabBarItemPropsIOS
 tabSelected = TabBarItemPropsIOS <<< unsafeMkProps "selected"
 
 navigationBarTintColor :: Color -> NavigationBarPropsIOS
-navigationBarTintColor (Color c) = NavigationBarPropsIOS $ unsafeMkProps "tintColor" c
+navigationBarTintColor c = NavigationBarPropsIOS $ unsafeMkProps "tintColor" $ colorToString c
 
 navigationBarTitleTextColor :: Color -> NavigationBarPropsIOS
-navigationBarTitleTextColor (Color c) = NavigationBarPropsIOS $ unsafeMkProps "titleTextColor" c
+navigationBarTitleTextColor c = NavigationBarPropsIOS $ unsafeMkProps "titleTextColor" $ colorToString c
 
 navigationBarBarTintColor :: Color -> NavigationBarPropsIOS
-navigationBarBarTintColor (Color c) = NavigationBarPropsIOS $ unsafeMkProps "barTintColor" c
+navigationBarBarTintColor c = NavigationBarPropsIOS $ unsafeMkProps "barTintColor" $ colorToString c
 
 navigationBarTranslucent :: Boolean -> NavigationBarPropsIOS
 navigationBarTranslucent = NavigationBarPropsIOS <<< unsafeMkProps "translucent"
