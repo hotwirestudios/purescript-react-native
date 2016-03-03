@@ -44,6 +44,12 @@ onPressIn f = unsafeMkProps "onPressIn" (handle f)
 onPressOut :: forall eff props state result. (Event -> EventHandlerContext eff props state result) -> Props
 onPressOut f = unsafeMkProps "onPressOut" (handle f)
 
+delayPressIn :: Number -> Props
+delayPressIn = unsafeMkProps "delayPressIn"
+
+delayPressOut :: Number -> Props
+delayPressOut = unsafeMkProps "delayPressOut"
+
 onSubmitEditing :: forall eff props state result. (Event -> EventHandlerContext eff props state result) -> Props
 onSubmitEditing f = unsafeMkProps "onSubmitEditing" (handle f)
 
@@ -91,3 +97,6 @@ subtitle = unsafeMkProps "subtitle"
 
 subtitleColor :: Color -> Props
 subtitleColor (Color c) = unsafeMkProps "subtitleColor" c
+
+underlayColor :: Color -> Props
+underlayColor (Color c) = unsafeMkProps "underlayColor" c

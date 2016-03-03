@@ -7,6 +7,7 @@ exports.textClass = require('react-native').Text;
 exports.listViewClass = require('react-native').ListView;
 exports.touchableHighlightClass = require('react-native').TouchableHighlight;
 exports.touchableOpacityClass = require('react-native').TouchableOpacity;
+exports.touchableWithoutFeedbackClass = require('react-native').TouchableWithoutFeedback;
 exports.textInputClass = require('react-native').TextInput;
 exports.navigatorClass = require('react-native').Navigator;
 
