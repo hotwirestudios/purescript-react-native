@@ -141,6 +141,14 @@ exports.pushRoute = function (navigator) {
     };
 };
 
+exports.replaceRoute = function (navigator) {
+    return function (route) {
+        return function() {
+            navigator.replace(route);
+        };
+    };
+};
+
 exports.popRoute = function (navigator) {
     return function() {
         navigator.pop();

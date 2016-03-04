@@ -66,6 +66,11 @@ getCustomProps ctx = do
     ComponentProps compProps <- getProps ctx
     pure compProps.customProps
 
+getReactProps :: forall customProps props state eff. ReactThis (ComponentProps customProps props) state -> Eff (props :: ReactProps | eff) props
+getReactProps ctx = do
+    ComponentProps compProps <- getProps ctx
+    compProps.props
+
 componentProps :: forall customProps props. customProps -> Array Props -> ComponentProps customProps props
 componentProps customProps props = ComponentProps
     { customProps: customProps
@@ -95,26 +100,37 @@ data NavigatorRoute customProps props = NavigatorRoute (NavigatorRouteType custo
 
 newtype Navigator eff = Navigator
     { push :: forall customProps props. ReactElement -> NavigatorRoute customProps props -> Eff (props :: ReactProps, refs :: ReactRefs ReadOnly, state :: ReactState ReadWrite, navigate :: Navigate | eff) Unit
+    , replace :: forall customProps props. ReactElement -> NavigatorRoute customProps props -> Eff (props :: ReactProps, refs :: ReactRefs ReadOnly, state :: ReactState ReadWrite, navigate :: Navigate | eff) Unit
     }
 
 foreign import pushRoute :: forall route eff. ReactElement -> route -> Eff (navigate :: Navigate | eff) Unit
 foreign import popRoute :: forall eff. ReactElement -> Eff (navigate :: Navigate | eff) Unit
+foreign import replaceRoute :: forall route eff. ReactElement -> route -> Eff (navigate :: Navigate | eff) Unit
 
 foreign import getNavigationHelper :: forall props state eff eff1. ReactThis props state -> Eff (props :: ReactProps | eff) (Navigator eff1)
 
-navigationHelper :: forall eff result. (ReactElement -> NavigationEvent -> Eff (props :: ReactProps, refs :: ReactRefs ReadOnly, state :: ReactState ReadWrite, navigate :: Navigate | eff) result) -> Props
+type NavigationHandler eff result = (ReactElement -> NavigationEvent -> Eff (props :: ReactProps, refs :: ReactRefs ReadOnly, state :: ReactState ReadWrite, navigate :: Navigate | eff) result)
+
+navigationHelper :: forall eff result. NavigationHandler eff result -> Props
 navigationHelper handler = unsafeMkProps "navigationHelper" navi
     where
         navi = (Navigator
                     { push: push
+                    , replace: replace
                     })
         push :: forall customProps props. ReactElement -> NavigatorRoute customProps props -> Eff (props :: ReactProps, refs :: ReactRefs ReadOnly, state :: ReactState ReadWrite, navigate :: Navigate | eff) Unit
         push element (NavigatorRoute r) = do
             pushRoute element $ adjustRoute r
             handler element Push
             pure unit
+        replace :: forall customProps props. ReactElement -> NavigatorRoute customProps props -> Eff (props :: ReactProps, refs :: ReactRefs ReadOnly, state :: ReactState ReadWrite, navigate :: Navigate | eff) Unit
+        replace element (NavigatorRoute r) = do
+            replaceRoute element $ adjustRoute r
+            handler element Push
+            pure unit
+        adjustRoute :: forall customProps props. NavigatorRouteType customProps props -> NavigatorRouteType customProps props
+        adjustRoute r = r { passProps = passPropsToProps $ adjustPassProps r.passProps }
             where
-                adjustRoute r = r { passProps = passPropsToProps $ adjustPassProps r.passProps }
                 adjustPassProps (ComponentProps compProps) = ComponentProps (compProps {initialProps = snoc compProps.initialProps $ navigationHelper handler})
 
 data NavigationEvent = Push
