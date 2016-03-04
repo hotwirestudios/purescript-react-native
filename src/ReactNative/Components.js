@@ -12,6 +12,22 @@ exports.touchableWithoutFeedbackClass = require('react-native').TouchableWithout
 exports.textInputClass = require('react-native').TextInput;
 exports.navigatorClass = require('react-native').Navigator;
 
+exports.sceneConfigs = function () {
+    var configs = require('react-native').Navigator.SceneConfigs
+    return {
+        pushFromRight: configs.PushFromRight,
+        floatFromRight: configs.FloatFromRight,
+        floatFromLeft: configs.FloatFromLeft,
+        floatFromBottom: configs.FloatFromBottom,
+        floatFromBottomAndroid: configs.FloatFromBottomAndroid,
+        fadeAndroid: configs.FadeAndroid,
+        horizontalSwipeJump: configs.HorizontalSwipeJump,
+        horizontalSwipeJumpFromRight: configs.HorizontalSwipeJumpFromRight,
+        verticalUpSwipeJump: configs.VerticalUpSwipeJump,
+        verticalDownSwipeJump: configs.VerticalDownSwipeJump
+    };
+};
+
 exports.listViewDataSource = function(dict){
   return function(items){
     var ReactNative = require('react-native');

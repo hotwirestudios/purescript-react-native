@@ -137,13 +137,48 @@ data NavigationEvent = Push
 
 foreign import setNavigator :: forall customProps props. (ComponentProps customProps (NavigatorChildProps props)) -> ReactElement -> (ComponentProps customProps (NavigatorChildProps props))
 
-navigator :: forall customProps props. NavigatorRoute customProps props -> (NavigatorRoute customProps props -> ReactElement -> ReactElement) -> Array Props -> ReactElement
-navigator route render props =
+navigator :: forall customProps props. NavigatorRoute customProps props -> SceneConfig -> (NavigatorRoute customProps props -> ReactElement -> ReactElement) -> Array Props -> ReactElement
+navigator route config render props =
     createNativeElement navigatorClass combinedProps []
     where
-        combinedProps = props <> [initialRoute route, renderScene]
+        combinedProps = props <> [initialRoute route, renderScene, configureScene]
         initialRoute (NavigatorRoute r) = unsafeMkProps "initialRoute" r
         renderScene = unsafeMkProps "renderScene" callback
+        configureScene = unsafeMkProps "configureScene" sceneCallback
+        sceneCallback = mkFn2 \r s -> toJSSceneConfig config
         callback = mkFn2 $ \r n -> do
             let nr = (NavigatorRoute (r {passProps = setNavigator r.passProps n}))
             render nr n
+
+foreign import data JSSceneConfig :: *
+foreign import sceneConfigs :: Unit -> JSSceneConfigs
+
+data SceneConfig = PushFromRight | FloatFromRight | FloatFromLeft | FloatFromBottom | FloatFromBottomAndroid | FadeAndroid | HorizontalSwipeJump | HorizontalSwipeJumpFromRight | VerticalUpSwipeJump | VerticalDownSwipeJump
+
+toJSSceneConfig :: SceneConfig -> JSSceneConfig
+toJSSceneConfig config = do
+    let configs = sceneConfigs unit
+    case config of
+        PushFromRight -> configs.pushFromRight
+        FloatFromRight -> configs.floatFromRight
+        FloatFromLeft -> configs.floatFromLeft
+        FloatFromBottom -> configs.floatFromBottom
+        FloatFromBottomAndroid -> configs.floatFromBottomAndroid
+        FadeAndroid -> configs.fadeAndroid
+        HorizontalSwipeJump -> configs.horizontalSwipeJump
+        HorizontalSwipeJumpFromRight -> configs.horizontalSwipeJumpFromRight
+        VerticalUpSwipeJump -> configs.verticalUpSwipeJump
+        VerticalDownSwipeJump -> configs.verticalDownSwipeJump
+
+type JSSceneConfigs =
+    { pushFromRight :: JSSceneConfig
+    , floatFromRight :: JSSceneConfig
+    , floatFromLeft :: JSSceneConfig
+    , floatFromBottom :: JSSceneConfig
+    , floatFromBottomAndroid :: JSSceneConfig
+    , fadeAndroid :: JSSceneConfig
+    , horizontalSwipeJump :: JSSceneConfig
+    , horizontalSwipeJumpFromRight :: JSSceneConfig
+    , verticalUpSwipeJump :: JSSceneConfig
+    , verticalDownSwipeJump :: JSSceneConfig
+    }
