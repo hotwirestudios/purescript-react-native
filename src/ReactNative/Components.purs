@@ -1,8 +1,9 @@
 module ReactNative.Components where
 
-import Prelude (class Eq, Unit, ($), (<>), bind, pure, unit)
-import Data.Array (snoc)
+import Prelude (class Eq, Unit, unit, (==), ($), (<>), pure, bind)
+import Data.Array (last, snoc)
 import Data.Function (mkFn2)
+import Data.Maybe (Maybe(Nothing, Just))
 import Control.Monad.Eff (Eff)
 import React (ReactElement, ReadWrite, ReactState, ReadOnly, ReactRefs, ReactProps, ReactClass, ReactSpec, ReactThis, getProps)
 import React.DOM.Props (Props, unsafeMkProps)
@@ -85,27 +86,37 @@ uninitializedProps = unsafeThrowPropsNotInitializedException
 
 type NavigatorChildProps a =
     { navigator :: ReactElement
+    , appearing :: Appearing
     | a
     }
+
+data Appearing = WillAppear | WillDisappear
 
 foreign import data Navigate :: !
 
 type NavigatorRouteType customProps props =
-    { title :: String
+    { id :: String
+    , title :: String
     , component :: ReactClass (ComponentProps customProps (NavigatorChildProps props))
     , passProps :: ComponentProps customProps (NavigatorChildProps props)
     }
+
+type ViewStateCallback eff result = Eff (props :: ReactProps, refs :: ReactRefs ReadOnly, state :: ReactState ReadWrite | eff) result
 
 data NavigatorRoute customProps props = NavigatorRoute (NavigatorRouteType customProps props)
 
 newtype Navigator eff = Navigator
     { push :: forall customProps props. ReactElement -> NavigatorRoute customProps props -> Eff (props :: ReactProps, refs :: ReactRefs ReadOnly, state :: ReactState ReadWrite, navigate :: Navigate | eff) Unit
     , replace :: forall customProps props. ReactElement -> NavigatorRoute customProps props -> Eff (props :: ReactProps, refs :: ReactRefs ReadOnly, state :: ReactState ReadWrite, navigate :: Navigate | eff) Unit
+    , resetTo :: forall customProps props. ReactElement -> NavigatorRoute customProps props -> Eff (props :: ReactProps, refs :: ReactRefs ReadOnly, state :: ReactState ReadWrite, navigate :: Navigate | eff) Unit
     }
 
 foreign import pushRoute :: forall route eff. ReactElement -> route -> Eff (navigate :: Navigate | eff) Unit
 foreign import popRoute :: forall eff. ReactElement -> Eff (navigate :: Navigate | eff) Unit
 foreign import replaceRoute :: forall route eff. ReactElement -> route -> Eff (navigate :: Navigate | eff) Unit
+foreign import resetRoute :: forall route eff. ReactElement -> route -> Eff (navigate :: Navigate | eff) Unit
+
+foreign import getCurrentRoutes :: forall customProps props. ReactElement -> Array (NavigatorRouteType customProps props)
 
 foreign import getNavigationHelper :: forall props state eff eff1. ReactThis props state -> Eff (props :: ReactProps | eff) (Navigator eff1)
 
@@ -117,6 +128,7 @@ navigationHelper handler = unsafeMkProps "navigationHelper" navi
         navi = (Navigator
                     { push: push
                     , replace: replace
+                    , resetTo: resetTo
                     })
         push :: forall customProps props. ReactElement -> NavigatorRoute customProps props -> Eff (props :: ReactProps, refs :: ReactRefs ReadOnly, state :: ReactState ReadWrite, navigate :: Navigate | eff) Unit
         push element (NavigatorRoute r) = do
@@ -126,16 +138,21 @@ navigationHelper handler = unsafeMkProps "navigationHelper" navi
         replace :: forall customProps props. ReactElement -> NavigatorRoute customProps props -> Eff (props :: ReactProps, refs :: ReactRefs ReadOnly, state :: ReactState ReadWrite, navigate :: Navigate | eff) Unit
         replace element (NavigatorRoute r) = do
             replaceRoute element $ adjustRoute r
-            handler element Push
+            handler element Replace
+            pure unit
+        resetTo :: forall customProps props. ReactElement -> NavigatorRoute customProps props -> Eff (props :: ReactProps, refs :: ReactRefs ReadOnly, state :: ReactState ReadWrite, navigate :: Navigate | eff) Unit
+        resetTo element (NavigatorRoute r) = do
+            resetRoute element $ adjustRoute r
+            handler element Reset
             pure unit
         adjustRoute :: forall customProps props. NavigatorRouteType customProps props -> NavigatorRouteType customProps props
         adjustRoute r = r { passProps = passPropsToProps $ adjustPassProps r.passProps }
             where
                 adjustPassProps (ComponentProps compProps) = ComponentProps (compProps {initialProps = snoc compProps.initialProps $ navigationHelper handler})
 
-data NavigationEvent = Push
+data NavigationEvent = Push | Replace | Reset
 
-foreign import setNavigator :: forall customProps props. (ComponentProps customProps (NavigatorChildProps props)) -> ReactElement -> (ComponentProps customProps (NavigatorChildProps props))
+foreign import setNavigator :: forall customProps props. (ComponentProps customProps (NavigatorChildProps props)) -> ReactElement -> Appearing -> (ComponentProps customProps (NavigatorChildProps props))
 
 navigator :: forall customProps props. NavigatorRoute customProps props -> SceneConfig -> (NavigatorRoute customProps props -> ReactElement -> ReactElement) -> Array Props -> ReactElement
 navigator route config render props =
@@ -147,7 +164,10 @@ navigator route config render props =
         configureScene = unsafeMkProps "configureScene" sceneCallback
         sceneCallback = mkFn2 \r s -> toJSSceneConfig config
         callback = mkFn2 $ \r n -> do
-            let nr = (NavigatorRoute (r {passProps = setNavigator r.passProps n}))
+            let appearing = case last $ getCurrentRoutes n of
+                                Just routeObj -> if routeObj.id == r.id then WillAppear else WillDisappear
+                                Nothing -> WillDisappear
+                nr = (NavigatorRoute (r {passProps = setNavigator r.passProps n appearing}))
             render nr n
 
 foreign import data JSSceneConfig :: *

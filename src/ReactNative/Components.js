@@ -165,6 +165,18 @@ exports.replaceRoute = function (navigator) {
     };
 };
 
+exports.resetRoute = function (navigator) {
+    return function (route) {
+        return function() {
+            navigator.resetTo(route);
+        };
+    };
+};
+
+exports.getCurrentRoutes = function (navigator) {
+    return navigator.getCurrentRoutes();
+};
+
 exports.popRoute = function (navigator) {
     return function() {
         navigator.pop();
@@ -173,8 +185,11 @@ exports.popRoute = function (navigator) {
 
 exports.setNavigator = function (props) {
     return function (navigator) {
-        props.value0.initialProps.push({navigator: navigator});
-        return props;
+        return function (appearing) {
+            props.value0.initialProps.push({navigator: navigator});
+            props.value0.initialProps.push({appearing: appearing});
+            return props;
+        };
     };
 };
 
