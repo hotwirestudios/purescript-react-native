@@ -7,6 +7,7 @@ import Data.Maybe (Maybe(Nothing, Just))
 import Control.Monad.Eff (Eff)
 import React (ReactElement, ReadWrite, ReactState, ReadOnly, ReactRefs, ReactProps, ReactClass, ReactSpec, ReactThis, getProps)
 import React.DOM.Props (Props, unsafeMkProps)
+import ReactNative.Styles (StyleProp, StyleId)
 
 foreign import createNativeElement :: forall props. ReactClass props -> props -> Array ReactElement -> ReactElement
 foreign import createNativeClass :: forall props state eff. ReactSpec props state eff -> ReactClass props
@@ -198,9 +199,10 @@ type JSSceneConfigs =
     , verticalDownSwipeJump :: JSSceneConfig
     }
 
--- ContentContainerStyle = ContentContainerStyle
---     { style :: Array Props
---     }
---
--- scrollView :: Array Props -> Array ReactElement -> ReactElement
--- scrollView props children = createNativeElement scrollViewClass props children
+data ContentContainerStyle = ContentContainerStyleInline (Array StyleProp) | ContentContainerStyle StyleId
+
+scrollView :: ContentContainerStyle -> Array Props -> Array ReactElement -> ReactElement
+scrollView ccs props children = createNativeElement scrollViewClass (snoc props $ containerStyle ccs) children
+    where
+        containerStyle (ContentContainerStyleInline styleProps) = unsafeMkProps "contentContainerStyle" $ passPropsToProps styleProps
+        containerStyle (ContentContainerStyle styleId) = unsafeMkProps "contentContainerStyle" $ styleId
