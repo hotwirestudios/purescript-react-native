@@ -1,13 +1,12 @@
 module ReactNative.Components where
 
-import Prelude (class Eq, Unit, unit, (==), ($), (<>), pure, bind)
+import Prelude (Unit, unit, (==), ($), (<>), pure, bind)
 import Data.Array (last, snoc)
 import Data.Function (mkFn2)
 import Data.Maybe (Maybe(Nothing, Just))
 import Control.Monad.Eff (Eff)
 import React (ReactElement, ReadWrite, ReactState, ReadOnly, ReactRefs, ReactProps, ReactClass, ReactSpec, ReactThis, getProps)
 import React.DOM.Props (Props, unsafeMkProps)
-import ReactNative.Props (ListViewDataSource)
 
 foreign import createNativeElement :: forall props. ReactClass props -> props -> Array ReactElement -> ReactElement
 foreign import createNativeClass :: forall props state eff. ReactSpec props state eff -> ReactClass props
@@ -19,10 +18,9 @@ foreign import listViewClass :: forall props. ReactClass props
 foreign import touchableHighlightClass :: forall props. ReactClass props
 foreign import touchableOpacityClass :: forall props. ReactClass props
 foreign import touchableWithoutFeedbackClass :: forall props. ReactClass props
-foreign import listViewDataSource :: forall a. (Eq a) => Array a -> ListViewDataSource
-foreign import cloneWithRows :: forall a. ListViewDataSource -> Array a -> ListViewDataSource
 foreign import textInputClass :: forall props. ReactClass props
 foreign import navigatorClass :: forall props. ReactClass props
+foreign import scrollViewClass :: forall props. ReactClass props
 
 view :: Array Props -> Array ReactElement -> ReactElement
 view = createNativeElement viewClass
@@ -38,9 +36,6 @@ text' props = createNativeElement textClass props
 
 textView :: Array Props -> Array ReactElement -> ReactElement
 textView = createNativeElement textClass
-
-listView :: Array Props -> ReactElement
-listView props = createNativeElement listViewClass props []
 
 touchableHighlight :: Array Props -> ReactElement -> ReactElement
 touchableHighlight props element = createNativeElement touchableHighlightClass props [element]
@@ -202,3 +197,10 @@ type JSSceneConfigs =
     , verticalUpSwipeJump :: JSSceneConfig
     , verticalDownSwipeJump :: JSSceneConfig
     }
+
+-- ContentContainerStyle = ContentContainerStyle
+--     { style :: Array Props
+--     }
+--
+-- scrollView :: Array Props -> Array ReactElement -> ReactElement
+-- scrollView props children = createNativeElement scrollViewClass props children

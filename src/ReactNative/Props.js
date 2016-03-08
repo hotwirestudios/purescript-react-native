@@ -2,12 +2,6 @@
 
 // module ReactNative.Props
 
-exports.unitFn = function(data) {
-    return function() {
-        return data;
-    };
-};
-
 exports.storeRef = function (reactThis) {
     return function(key) {
         return function(ref) {

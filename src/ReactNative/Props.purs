@@ -1,36 +1,13 @@
 module ReactNative.Props where
 
-import Prelude (Unit, (<<<), ($))
+import Prelude (Unit, ($))
 import Control.Monad.Eff (Eff)
-import Data.Function (mkFn3, mkFn4)
 import React (ReactThis, Write, ReactRefs, ReactElement, Read, EventHandlerContext, Event, handle)
 import React.DOM.Props (Props, unsafeMkProps)
 import ReactNative (Color, colorToString)
 
-foreign import data ListViewDataSource :: *
-
-type RenderRowFn = forall rowData highlightFn. rowData -> String -> String -> highlightFn -> ReactElement
-type RenderSeparatorFn = String -> String -> Boolean -> ReactElement
-type RenderHeaderFn = forall eff. Eff eff ReactElement
 type OnPressFn = forall eff. Eff eff Unit
 newtype AssetId = AssetId Int
-
-foreign import unitFn :: forall a. a -> (Unit -> a)
-
-renderRow :: forall rowData highlightFn. (rowData -> String -> String -> highlightFn -> ReactElement) -> Props
-renderRow = unsafeMkProps "renderRow" <<< mkFn4
-
-renderSeparator :: RenderSeparatorFn -> Props
-renderSeparator fun = unsafeMkProps "renderSeparator" (mkFn3 fun)
-
-renderHeader :: ReactElement -> Props
-renderHeader elem = unsafeMkProps "renderHeader" (unitFn elem)
-
-renderFooter :: ReactElement -> Props
-renderFooter elem = unsafeMkProps "renderFooter" (unitFn elem)
-
-dataSource :: ListViewDataSource -> Props
-dataSource = unsafeMkProps "dataSource"
 
 activeOpacity :: Number -> Props
 activeOpacity = unsafeMkProps "activeOpacity"
