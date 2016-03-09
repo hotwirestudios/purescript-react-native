@@ -4,7 +4,8 @@ import Prelude (Unit, ($), (++), map)
 import Control.Monad.Eff (Eff)
 import React (ReactClass, ReactElement, Write)
 import React.DOM.Props (Props, unsafeMkProps)
-import ReactNative.Components (NavigatorRoute(NavigatorRoute), createNativeElement, passPropsToProps)
+import ReactNative.Components (createNativeElement, passPropsToProps)
+import ReactNative.Components.Navigator (NavigatorRoute(NavigatorRoute))
 import ReactNative.Props.IOS (TabBarPropsIOS(..), TabBarItemPropsIOS(..), NavigationBarPropsIOS(..))
 
 foreign import tabBarIOSClass :: forall props. ReactClass props

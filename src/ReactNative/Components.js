@@ -10,24 +10,7 @@ exports.touchableHighlightClass = require('react-native').TouchableHighlight;
 exports.touchableOpacityClass = require('react-native').TouchableOpacity;
 exports.touchableWithoutFeedbackClass = require('react-native').TouchableWithoutFeedback;
 exports.textInputClass = require('react-native').TextInput;
-exports.navigatorClass = require('react-native').Navigator;
 exports.scrollViewClass = require('react-native').ScrollView;
-
-exports.sceneConfigs = function () {
-    var configs = require('react-native').Navigator.SceneConfigs
-    return {
-        pushFromRight: configs.PushFromRight,
-        floatFromRight: configs.FloatFromRight,
-        floatFromLeft: configs.FloatFromLeft,
-        floatFromBottom: configs.FloatFromBottom,
-        floatFromBottomAndroid: configs.FloatFromBottomAndroid,
-        fadeAndroid: configs.FadeAndroid,
-        horizontalSwipeJump: configs.HorizontalSwipeJump,
-        horizontalSwipeJumpFromRight: configs.HorizontalSwipeJumpFromRight,
-        verticalUpSwipeJump: configs.VerticalUpSwipeJump,
-        verticalDownSwipeJump: configs.VerticalDownSwipeJump
-    };
-};
 
 function mkProps(result) {
     return function (props) {
@@ -133,56 +116,6 @@ function createNativeClass(spec) {
     return require('react-native').createClass(result);
 }
 exports.createNativeClass = createNativeClass;
-
-exports.pushRoute = function (navigator) {
-    return function (route) {
-        return function() {
-            navigator.push(route);
-        };
-    };
-};
-
-exports.replaceRoute = function (navigator) {
-    return function (route) {
-        return function() {
-            navigator.replace(route);
-        };
-    };
-};
-
-exports.resetRoute = function (navigator) {
-    return function (route) {
-        return function() {
-            navigator.resetTo(route);
-        };
-    };
-};
-
-exports.getCurrentRoutes = function (navigator) {
-    return navigator.getCurrentRoutes();
-};
-
-exports.popRoute = function (navigator) {
-    return function() {
-        navigator.pop();
-    };
-};
-
-exports.setNavigator = function (props) {
-    return function (navigator) {
-        return function (appearing) {
-            props.value0.initialProps.push({navigator: navigator});
-            props.value0.initialProps.push({appearing: appearing});
-            return props;
-        };
-    };
-};
-
-exports.getNavigationHelper = function(reactThis) {
-    return function() {
-        return reactThis.props.navigationHelper;
-    };
-};
 
 exports.unsafeThrowPropsNotInitializedException = function() {
     throw "Pass the ComponentProps to a createNativeElement call. Afterwards the props will be available. Before that, use initialProps or customProps to access your props values.";
