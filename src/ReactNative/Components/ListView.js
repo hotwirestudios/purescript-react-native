@@ -16,12 +16,14 @@ exports.listViewDataSource = function(dict){
 
 exports.listViewDataSourceWithSections = function(dict){
     return function(items){
-        var ReactNative = require('react-native');
-        var ListView = ReactNative.ListView;
-        return new ListView.DataSource({
-            rowHasChanged: function(r1, r2) { return !dict.eq(r1)(r2); },
-            sectionHeaderHasChanged: function(s1, s2) { return !dict.eq(s1)(s2); }
-        }).cloneWithRowsAndSections(items);
+        return function(sectionIds) {
+            var ReactNative = require('react-native');
+            var ListView = ReactNative.ListView;
+            return new ListView.DataSource({
+                rowHasChanged: function(r1, r2) { return !dict.eq(r1)(r2); },
+                sectionHeaderHasChanged: function(s1, s2) { return s1 !== s2 }
+            }).cloneWithRowsAndSections(items);
+        };
     };
 };
 
@@ -33,7 +35,9 @@ exports.cloneWithRows = function(dataSource){
 
 exports.cloneWithRowsAndSections = function(dataSource){
     return function(data){
-        return dataSource.cloneWithRowsAndSections(data);
+        return function(sectionIds) {
+            return dataSource.cloneWithRowsAndSections(data, sectionIds);
+        };
     };
 };
 

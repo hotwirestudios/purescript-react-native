@@ -22,9 +22,9 @@ type RenderSeparatorFn = String -> String -> Boolean -> ReactElement
 
 foreign import listViewClass :: forall props. ReactClass props
 foreign import listViewDataSource :: forall a. (Eq a) => Array a -> ListViewDataSource a
-foreign import listViewDataSourceWithSections :: forall a. (Eq a) => StrMap (Array a) -> ListViewDataSource a
+foreign import listViewDataSourceWithSections :: forall a. (Eq a) => StrMap (Array a) -> Array String -> ListViewDataSource a
 foreign import cloneWithRows :: forall a. ListViewDataSource a -> Array a -> ListViewDataSource a
-foreign import cloneWithRowsAndSections :: forall a. ListViewDataSource a -> StrMap (Array a) -> ListViewDataSource a
+foreign import cloneWithRowsAndSections :: forall a. ListViewDataSource a -> StrMap (Array a) -> Array String -> ListViewDataSource a
 foreign import unitFn :: forall a. a -> (Unit -> a)
 
 foreign import data ListViewDataSource :: * -> *
