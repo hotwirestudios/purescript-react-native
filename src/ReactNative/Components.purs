@@ -49,6 +49,11 @@ touchableWithoutFeedback props element = createNativeElement touchableWithoutFee
 textInput :: Array Props -> ReactElement
 textInput props = createNativeElement textInputClass props []
 
+secureTextInput :: Array Props -> ReactElement
+secureTextInput props = textInput combinedProps
+    where
+        combinedProps = snoc props $ unsafeMkProps "secureTextEntry" true
+
 foreign import passPropsToProps :: forall props. props -> props
 
 data ComponentProps customProps props = ComponentProps
