@@ -78,6 +78,12 @@ subtitleColor c = unsafeMkProps "subtitleColor" $ colorToString c
 underlayColor :: Color -> Props
 underlayColor c = unsafeMkProps "underlayColor" $ colorToString c
 
+placeholder :: String -> Props
+placeholder = unsafeMkProps "placeholder"
+
+placeholderColor :: Color -> Props
+placeholderColor c = unsafeMkProps "placeholderColor" $ colorToString c
+
 data AssetSource = AssetSourceId AssetId | AssetSourceURI { uri :: String }
 
 source :: AssetSource -> Props

@@ -15,7 +15,6 @@ foreign import viewClass :: forall props. ReactClass props
 foreign import imageClass :: forall props. ReactClass props
 foreign import textElem :: String -> ReactElement
 foreign import textClass :: forall props. ReactClass props
-foreign import listViewClass :: forall props. ReactClass props
 foreign import touchableHighlightClass :: forall props. ReactClass props
 foreign import touchableOpacityClass :: forall props. ReactClass props
 foreign import touchableWithoutFeedbackClass :: forall props. ReactClass props

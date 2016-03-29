@@ -5,7 +5,6 @@
 exports.viewClass = require('react-native').View;
 exports.imageClass = require('react-native').Image;
 exports.textClass = require('react-native').Text;
-exports.listViewClass = require('react-native').ListView;
 exports.touchableHighlightClass = require('react-native').TouchableHighlight;
 exports.touchableOpacityClass = require('react-native').TouchableOpacity;
 exports.touchableWithoutFeedbackClass = require('react-native').TouchableWithoutFeedback;

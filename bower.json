@@ -19,7 +19,8 @@
     "purescript-react": "~0.6.0",
     "purescript-functions": "~0.1.0",
     "purescript-debug": "^0.1.3",
-    "purescript-nullable": "^0.2.1"
+    "purescript-nullable": "^0.2.1",
+    "purescript-maps": "^0.5.7"
   },
   "authors": [
     "Nicholas Kariniemi <nicholas.kariniemi@gmail.com>"
