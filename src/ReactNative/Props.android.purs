@@ -43,3 +43,6 @@ type PageScrollEvent =
 
 onPageScroll :: forall eff props state result. (PageScrollEvent -> EventHandlerContext eff props state result) -> Props
 onPageScroll f = unsafeMkProps "onPageScroll" (handle f)
+
+underlineColorAndroid :: Color -> Props
+underlineColorAndroid c = unsafeMkProps "underlineColorAndroid" $ colorToString c

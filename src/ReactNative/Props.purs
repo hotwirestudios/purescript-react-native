@@ -98,3 +98,37 @@ resizeMode mode = unsafeMkProps "resizeMode" $
         Cover -> "cover"
         Contain -> "contain"
         Stretch -> "stretch"
+
+data KeyboardType = KeyboardTypeDefault | KeyboardTypeEmailAddress | KeyboardTypeNumeric | KeyboardTypePhonePad | KeyboardTypeAsciiCapable | KeyboardTypeNumbers | KeyboardTypeUrl | KeyboardTypeNumberPad | KeyboardTypeNamePhonePad | KeyboardTypeDecimalPad | KeyboardTypeTwitter | KeyboardTypeWebSearch
+
+keyboardType :: KeyboardType -> Props
+keyboardType kt = unsafeMkProps "keyboardType" $
+    case kt of
+        KeyboardTypeDefault -> "default"
+        KeyboardTypeEmailAddress -> "email-address"
+        KeyboardTypeNumeric -> "numeric"
+        KeyboardTypePhonePad -> "phone-pad"
+        KeyboardTypeAsciiCapable -> "ascii-capable"
+        KeyboardTypeNumbers -> "numbers-and-punctuation"
+        KeyboardTypeUrl -> "url"
+        KeyboardTypeNumberPad -> "number-pad"
+        KeyboardTypeNamePhonePad -> "phone-pad"
+        KeyboardTypeDecimalPad -> "decimal-pad"
+        KeyboardTypeTwitter -> "twitter"
+        KeyboardTypeWebSearch -> "web-search"
+
+autoFocus :: Boolean -> Props
+autoFocus = unsafeMkProps "autoFocus"
+
+autoCorrect :: Boolean -> Props
+autoCorrect = unsafeMkProps "autoCorrect"
+
+data AutoCapitalize = AutoCapitalizeNone | AutoCapitalizeSentences | AutoCapitalizeWords | AutoCapitalizeCharacters
+
+autoCapitalize :: AutoCapitalize -> Props
+autoCapitalize ac = unsafeMkProps "autoCapitalize" $
+    case ac of
+        AutoCapitalizeNone -> "none"
+        AutoCapitalizeSentences -> "sentences"
+        AutoCapitalizeWords -> "words"
+        AutoCapitalizeCharacters -> "characters"
