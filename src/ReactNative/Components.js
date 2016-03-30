@@ -123,3 +123,9 @@ exports.unsafeThrowPropsNotInitializedException = function() {
 exports.textElem = function(text) {
     return text;
 };
+
+exports.focus = function(element) {
+    return function() {
+        element.focus();
+    };
+};

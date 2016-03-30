@@ -82,3 +82,6 @@ foreign import unsafeThrowPropsNotInitializedException :: forall eff props. Eff 
 
 uninitializedProps :: forall eff props. Eff (props :: ReactProps | eff) props
 uninitializedProps = unsafeThrowPropsNotInitializedException
+
+foreign import data Focus :: !
+foreign import focus :: forall eff. ReactElement -> Eff (focus :: Focus | eff) Unit
