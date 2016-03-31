@@ -5,6 +5,7 @@
 exports.tabBarIOSClass = require('react-native').TabBarIOS;
 exports.tabBarItemIOSClass = require('react-native').TabBarIOS.Item;
 exports.navigatorIOSClass = require('react-native').NavigatorIOS;
+exports.activityIndicatorIOSClass = require('react-native').ActivityIndicatorIOS;
 
 exports.setStatusBarStyleIOSImpl = function (style) {
     return function() {

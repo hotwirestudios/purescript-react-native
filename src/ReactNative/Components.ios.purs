@@ -1,9 +1,11 @@
 module ReactNative.Components.IOS where
 
-import Prelude (Unit, ($), (++), map)
+import Prelude (Unit, ($), (++), map, (<>))
 import Control.Monad.Eff (Eff)
+import Data.Maybe (Maybe(Just, Nothing))
 import React (ReactClass, ReactElement, Write)
 import React.DOM.Props (Props, unsafeMkProps)
+import ReactNative (Color, colorToString)
 import ReactNative.Components (createNativeElement, passPropsToProps)
 import ReactNative.Components.Navigator (NavigatorRoute(NavigatorRoute))
 import ReactNative.Props.IOS (TabBarPropsIOS(..), TabBarItemPropsIOS(..), NavigationBarPropsIOS(..))
@@ -42,3 +44,47 @@ data StatusBarStyleIOS = Default | LightContent
 setStatusBarStyleIOS :: forall eff. StatusBarStyleIOS -> Eff (statusBarIOS :: StatusBarIOS (write :: Write) | eff) Unit
 setStatusBarStyleIOS (Default) = setStatusBarStyleIOSImpl "default"
 setStatusBarStyleIOS (LightContent) = setStatusBarStyleIOSImpl "light-content"
+
+foreign import activityIndicatorIOSClass :: forall props. ReactClass props
+
+type ActivityIndicatorIOSProps =
+    { animating :: Maybe Boolean
+    , color :: Maybe Color
+    , hidesWhenStopped :: Maybe Boolean
+    , size :: Maybe ActivityIndicatorIOSSize
+    }
+
+data ActivityIndicatorIOSSize = ActivityIndicatorIOSSizeSmall | ActivityIndicatorIOSSizeLarge
+
+activityIndicatorIOSProps :: ActivityIndicatorIOSProps
+activityIndicatorIOSProps =
+    { animating: Nothing
+    , color: Nothing
+    , hidesWhenStopped: Nothing
+    , size: Nothing
+    }
+
+activityIndicatorIOS :: ActivityIndicatorIOSProps -> Array Props -> ReactElement
+activityIndicatorIOS customProps props = createNativeElement activityIndicatorIOSClass combinedProps []
+    where
+        combinedProps = props <>
+            case customProps.animating of
+                Nothing -> []
+                Just animating -> [unsafeMkProps "animating" animating]
+            <>
+            case customProps.color of
+                Nothing -> []
+                Just color -> [unsafeMkProps "color" $ colorToString color]
+            <>
+            case customProps.hidesWhenStopped of
+                Nothing -> []
+                Just hidesWhenStopped -> [unsafeMkProps "hidesWhenStopped" hidesWhenStopped]
+            <>
+            case customProps.size of
+                Nothing -> []
+                Just size ->
+                    [ unsafeMkProps "size" $
+                        case size of
+                            ActivityIndicatorIOSSizeSmall -> "small"
+                            ActivityIndicatorIOSSizeLarge -> "large"
+                    ]
