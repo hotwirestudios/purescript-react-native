@@ -1,13 +1,12 @@
 module ReactNative.Components where
 
-import Prelude (Unit, unit, (==), ($), (<>), pure, bind)
-import Data.Array (last, snoc)
-import Data.Function (mkFn2)
+import Prelude (Unit, (<$>), ($), bind, pure)
+import Data.Array (snoc)
 import Data.Maybe (Maybe(Nothing, Just))
+import Data.Nullable (Nullable, toNullable)
 import Control.Monad.Eff (Eff)
-import React (ReactElement, ReadWrite, ReactState, ReadOnly, ReactRefs, ReactProps, ReactClass, ReactSpec, ReactThis, getProps)
+import React (Event, EventHandler, EventHandlerContext, ReactElement, ReactProps, ReactThis, ReactClass, ReactSpec, handle, getProps)
 import React.DOM.Props (Props, unsafeMkProps)
-import ReactNative.Styles (StyleProp, StyleId)
 
 foreign import createNativeElement :: forall props. ReactClass props -> props -> Array ReactElement -> ReactElement
 foreign import createNativeClass :: forall props state eff. ReactSpec props state eff -> ReactClass props
@@ -85,3 +84,35 @@ uninitializedProps = unsafeThrowPropsNotInitializedException
 
 foreign import data Focus :: !
 foreign import focus :: forall eff. ReactElement -> Eff (focus :: Focus | eff) Unit
+
+foreign import data Alert :: !
+
+newtype AlertButton = AlertButton
+    { text :: String
+    , onPress :: forall eff props state. (Event -> EventHandlerContext eff props state Unit)
+    , style :: Maybe AlertButtonStyle
+    }
+
+data AlertButtonStyle = AlertButtonStyleDefault | AlertButtonStyleCancel | AlertButtonStyleDesctructive
+
+type AlertButtonInternal =
+    { text :: String
+    , onPress :: EventHandler Event
+    , style :: Nullable String
+    }
+
+foreign import showAlert :: forall eff. Nullable String -> Nullable String -> Array AlertButtonInternal -> Eff (alert :: Alert | eff) Unit
+
+alert :: forall eff. Maybe String -> Maybe String -> Array AlertButton -> Eff (alert :: Alert | eff) Unit
+alert title txt buttons = showAlert (toNullable title) (toNullable txt) $ convertButton <$> buttons
+    where
+        convertButton (AlertButton button) =
+            { text: button.text
+            , onPress: handle button.onPress
+            , style: toNullable $
+                case button.style of
+                    Nothing -> Nothing
+                    Just AlertButtonStyleDefault -> Just "default"
+                    Just AlertButtonStyleCancel -> Just "cancel"
+                    Just AlertButtonStyleDesctructive -> Just "destructive"
+            }

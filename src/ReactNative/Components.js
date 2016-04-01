@@ -129,3 +129,19 @@ exports.focus = function(element) {
         element.focus();
     };
 };
+
+exports.showAlert = function(title) {
+    return function(text) {
+        return function(buttons) {
+            return function() {
+                for (let i = 0; i < buttons.length; i++) {
+                    let button = buttons[i];
+                    if (button.style === null) {
+                        button.style = undefined;
+                    }
+                }
+                require('react-native').Alert.alert(title, text, buttons);
+            };
+        };
+    };
+};
