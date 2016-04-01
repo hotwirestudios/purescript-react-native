@@ -45,6 +45,7 @@ newtype Navigator eff = Navigator
 
 foreign import pushRoute :: forall route eff. ReactElement -> route -> Eff (navigate :: Navigate | eff) Unit
 foreign import popRoute :: forall eff. ReactElement -> Eff (navigate :: Navigate | eff) Unit
+foreign import popToTop :: forall eff. ReactElement -> Eff (navigate :: Navigate | eff) Unit
 foreign import replaceRoute :: forall route eff. ReactElement -> route -> Eff (navigate :: Navigate | eff) Unit
 foreign import resetRoute :: forall route eff. ReactElement -> route -> Eff (navigate :: Navigate | eff) Unit
 

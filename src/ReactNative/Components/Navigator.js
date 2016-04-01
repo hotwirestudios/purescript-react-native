@@ -54,6 +54,12 @@ exports.popRoute = function (navigator) {
     };
 };
 
+exports.popToTop = function (navigator) {
+    return function() {
+        navigator.popToTop();
+    };
+};
+
 exports.setNavigator = function (props) {
     return function (navigator) {
         return function (appearing) {
