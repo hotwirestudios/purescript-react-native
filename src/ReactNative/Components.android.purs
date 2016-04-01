@@ -1,12 +1,14 @@
 module ReactNative.Components.Android where
 
-import Prelude (Unit, (<>), ($))
+import Prelude (Unit, (<>), ($), (<$>))
 import Control.Monad.Eff (Eff)
 import Data.Maybe (Maybe(Just, Nothing))
-import React (ReactElement, ReactClass)
+import Data.Nullable (Nullable, toNullable)
+import React (ReactElement, ReactClass, EventHandlerContext, handle)
 import React.DOM.Props (Props, unsafeMkProps)
 import ReactNative (Color, colorToString)
 import ReactNative.Components (createNativeElement)
+import ReactNative.Props (AssetId)
 
 foreign import data PageChange :: !
 
@@ -22,8 +24,67 @@ touchableNativeFeedback props element = createNativeElement touchableNativeFeedb
 viewPagerAndroid :: Array Props -> Array ReactElement -> ReactElement
 viewPagerAndroid = createNativeElement viewPagerAndroidClass
 
-toolbarAndroid :: Array Props -> ReactElement
-toolbarAndroid props = createNativeElement toolbarAndroidClass props []
+data ToolbarAndroidActionShow = ToolbarAndroidActionShowAlways | ToolbarAndroidActionShowIfRoom | ToolbarAndroidActionShowNever
+
+type ToolbarAndroidAction =
+    { title :: String
+    , icon :: Maybe AssetId
+    , show :: Maybe ToolbarAndroidActionShow
+    , showWithText :: Maybe Boolean
+    }
+
+toolbarAndroidAction :: String -> ToolbarAndroidAction
+toolbarAndroidAction title =
+    { title: title
+    , icon: Nothing
+    , show: Nothing
+    , showWithText: Nothing
+    }
+
+type ToolbarAndroidActionInternal =
+    { title :: String
+    , icon :: Nullable AssetId
+    , show :: Nullable String
+    , showWithText :: Nullable Boolean
+    }
+
+type ToolbarAndroidProps =
+    { actions :: Array ToolbarAndroidAction
+    , onActionSelected :: forall eff props state. Maybe (Int -> EventHandlerContext eff props state Unit)
+    }
+
+toolbarAndroidProps :: ToolbarAndroidProps
+toolbarAndroidProps =
+    { actions: []
+    , onActionSelected: Nothing
+    }
+
+foreign import stripNullProps :: forall a b. a -> b
+
+toolbarAndroid :: ToolbarAndroidProps -> Array Props -> ReactElement
+toolbarAndroid barProps props = createNativeElement toolbarAndroidClass combinedProps []
+    where
+        combinedProps = props <>
+            [unsafeMkProps "actions" $ convertAction <$> barProps.actions] <>
+            actionSelected
+
+        actionSelected =
+            case barProps.onActionSelected of
+                Nothing -> []
+                Just f -> [unsafeMkProps "onActionSelected" $ handle f]
+
+        convertAction :: ToolbarAndroidAction -> ToolbarAndroidActionInternal
+        convertAction action = stripNullProps
+            { title: action.title
+            , icon: toNullable action.icon
+            , show: toNullable $
+                case action.show of
+                    Nothing -> Nothing
+                    Just ToolbarAndroidActionShowAlways -> Just "always"
+                    Just ToolbarAndroidActionShowIfRoom -> Just "ifRoom"
+                    Just ToolbarAndroidActionShowNever -> Just "never"
+            , showWithText: toNullable action.showWithText
+            }
 
 type ProgressBarAndroidProps =
     { progress :: Maybe Number

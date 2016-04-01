@@ -4,8 +4,9 @@ import Prelude (Unit, unit, (==), ($), (<>), pure, bind)
 import Data.Array (last, snoc)
 import Data.Function (mkFn2)
 import Data.Maybe (Maybe(Nothing, Just))
+import Data.Nullable (Nullable)
 import Control.Monad.Eff (Eff)
-import React (ReactElement, ReadWrite, ReactState, ReadOnly, ReactRefs, ReactProps, ReactThis, ReactClass)
+import React (ReactElement, ReadWrite, ReactState, ReadOnly, ReactRefs, ReactProps, ReactThis, ReactClass, EventHandler, Event)
 import React.DOM.Props (Props, unsafeMkProps)
 import ReactNative.Styles (StyleProp, StyleId)
 import ReactNative.Components (ComponentProps(ComponentProps), scrollViewClass, createNativeElement, passPropsToProps)
@@ -27,6 +28,8 @@ type NavigatorRouteType customProps props =
     , title :: String
     , component :: ReactClass (ComponentProps customProps (NavigatorChildProps props))
     , passProps :: ComponentProps customProps (NavigatorChildProps props)
+    , rightButtonTitle :: Nullable String
+    , onRightButtonPress :: Nullable (EventHandler Event)
     }
 
 type ViewStateCallback eff result = Eff (props :: ReactProps, refs :: ReactRefs ReadOnly, state :: ReactState ReadWrite | eff) result

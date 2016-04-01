@@ -14,3 +14,12 @@ exports.setPage = function(viewPager) {
         }
     }
 }
+
+exports.stripNullProps = function(input) {
+    for (let key in input) {
+        if (input[key] === null) {
+            input[key] = undefined;
+        }
+    }
+    return input;
+};
