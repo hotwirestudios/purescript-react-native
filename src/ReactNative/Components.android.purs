@@ -8,6 +8,7 @@ import React (ReactElement, ReactClass, EventHandlerContext, handle)
 import React.DOM.Props (Props, unsafeMkProps)
 import ReactNative (Color, colorToString)
 import ReactNative.Components (createNativeElement)
+import ReactNative.Components.Navigator (Navigate)
 import ReactNative.Props (AssetId)
 
 foreign import data PageChange :: !
@@ -50,7 +51,7 @@ type ToolbarAndroidActionInternal =
 
 type ToolbarAndroidProps =
     { actions :: Array ToolbarAndroidAction
-    , onActionSelected :: forall eff props state. Maybe (Int -> EventHandlerContext eff props state Unit)
+    , onActionSelected :: forall eff props state. Maybe (Int -> EventHandlerContext (navigate :: Navigate | eff) props state Unit)
     }
 
 toolbarAndroidProps :: ToolbarAndroidProps
