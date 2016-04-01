@@ -26,6 +26,7 @@ foreign import data Navigate :: !
 type NavigatorRouteType customProps props =
     { id :: String
     , title :: String
+    , sceneConfig :: Maybe SceneConfig
     , component :: ReactClass (ComponentProps customProps (NavigatorChildProps props))
     , passProps :: ComponentProps customProps (NavigatorChildProps props)
     , rightButtonTitle :: Nullable String
@@ -85,15 +86,15 @@ data NavigationEvent = Push | Replace | Reset
 
 foreign import setNavigator :: forall customProps props. (ComponentProps customProps (NavigatorChildProps props)) -> ReactElement -> Appearing -> (ComponentProps customProps (NavigatorChildProps props))
 
-navigator :: forall customProps props. NavigatorRoute customProps props -> SceneConfig -> (NavigatorRoute customProps props -> ReactElement -> ReactElement) -> Array Props -> ReactElement
-navigator route config render props =
+navigator :: forall customProps props. NavigatorRoute customProps props -> (NavigatorRoute customProps props -> ReactElement -> ReactElement) -> Array Props -> ReactElement
+navigator route render props =
     createNativeElement navigatorClass combinedProps []
     where
         combinedProps = props <> [initialRoute route, renderScene, configureScene]
         initialRoute (NavigatorRoute r) = unsafeMkProps "initialRoute" r
         renderScene = unsafeMkProps "renderScene" callback
         configureScene = unsafeMkProps "configureScene" sceneCallback
-        sceneCallback = mkFn2 \r s -> toJSSceneConfig config
+        sceneCallback = mkFn2 \r s -> toJSSceneConfig r.sceneConfig
         callback = mkFn2 $ \r n -> do
             let appearing = case last $ getCurrentRoutes n of
                                 Just routeObj -> if routeObj.id == r.id then WillAppear else WillDisappear
@@ -106,20 +107,21 @@ foreign import sceneConfigs :: Unit -> JSSceneConfigs
 
 data SceneConfig = PushFromRight | FloatFromRight | FloatFromLeft | FloatFromBottom | FloatFromBottomAndroid | FadeAndroid | HorizontalSwipeJump | HorizontalSwipeJumpFromRight | VerticalUpSwipeJump | VerticalDownSwipeJump
 
-toJSSceneConfig :: SceneConfig -> JSSceneConfig
+toJSSceneConfig :: Maybe SceneConfig -> JSSceneConfig
 toJSSceneConfig config = do
     let configs = sceneConfigs unit
     case config of
-        PushFromRight -> configs.pushFromRight
-        FloatFromRight -> configs.floatFromRight
-        FloatFromLeft -> configs.floatFromLeft
-        FloatFromBottom -> configs.floatFromBottom
-        FloatFromBottomAndroid -> configs.floatFromBottomAndroid
-        FadeAndroid -> configs.fadeAndroid
-        HorizontalSwipeJump -> configs.horizontalSwipeJump
-        HorizontalSwipeJumpFromRight -> configs.horizontalSwipeJumpFromRight
-        VerticalUpSwipeJump -> configs.verticalUpSwipeJump
-        VerticalDownSwipeJump -> configs.verticalDownSwipeJump
+        Nothing -> configs.fadeAndroid
+        Just PushFromRight -> configs.pushFromRight
+        Just FloatFromRight -> configs.floatFromRight
+        Just FloatFromLeft -> configs.floatFromLeft
+        Just FloatFromBottom -> configs.floatFromBottom
+        Just FloatFromBottomAndroid -> configs.floatFromBottomAndroid
+        Just FadeAndroid -> configs.fadeAndroid
+        Just HorizontalSwipeJump -> configs.horizontalSwipeJump
+        Just HorizontalSwipeJumpFromRight -> configs.horizontalSwipeJumpFromRight
+        Just VerticalUpSwipeJump -> configs.verticalUpSwipeJump
+        Just VerticalDownSwipeJump -> configs.verticalDownSwipeJump
 
 type JSSceneConfigs =
     { pushFromRight :: JSSceneConfig
